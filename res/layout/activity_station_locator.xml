@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".StationLocator" >
+
+    <fragment
+        android:id="@+id/nearest_location_fragment"
+        android:name="com.audax.dev.forte.NearestCenterFragmentX"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp" />
+
+    <fragment
+        android:id="@+id/radius_selector_fragment"
+        android:name="com.audax.dev.forte.SliderRadiusSelector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/lbl_no_centers_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_centers_within"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/map_frame"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/forte_foreground_dark"
+        android:visibility="invisible" >
+
+        <fragment
+            android:id="@+id/nearest_center_map"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</LinearLayout>
