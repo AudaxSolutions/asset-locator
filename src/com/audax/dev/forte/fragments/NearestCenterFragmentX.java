@@ -1,13 +1,13 @@
-package com.audax.dev.forte;
+package com.audax.dev.forte.fragments;
 
 import java.util.Collection;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.audax.dev.forte.Constants;
+import com.audax.dev.forte.MapsActivity;
+import com.audax.dev.forte.R;
 import com.audax.dev.forte.data.Center;
 import com.audax.dev.forte.data.Repository;
 import com.audax.dev.forte.maps.LocationUtils;
@@ -22,8 +25,8 @@ import com.audax.dev.forte.maps.MapsClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
-public class NearestCenterFragment extends Fragment implements MapsClient.ClientListener, View.OnClickListener {
 
+public class NearestCenterFragmentX extends Fragment implements MapsClient.ClientListener, View.OnClickListener {
 	private MapsClient mapsClient;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,10 +39,7 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 	
 	private View rootView;
 	
-
-	public Location getCurrentLocation() {
-		return mapsClient.getCurrentLocation();
-	}
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,12 +48,6 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 		this.rootView = view;
 		view.findViewById(R.id.lnk_view_in_map).setOnClickListener(this);
 		return view;
-	}
-	
-	
-
-	public MapsClient getMapsClient() {
-		return mapsClient;
 	}
 
 	@Override
@@ -133,6 +127,15 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 	}
 	
 	
+	public Location getCurrentLocation() {
+		return mapsClient.getCurrentLocation();
+	}
+
+
+	public MapsClient getMapsClient() {
+		return mapsClient;
+	}
+	
 	@Override
 	public void onLocationChanged(MapsClient client) {
 		Repository repo = new Repository();
@@ -180,5 +183,5 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 			break;
 		}
 	}
-	
+
 }

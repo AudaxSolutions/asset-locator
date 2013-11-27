@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -17,8 +20,11 @@ import android.view.animation.AnticipateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.audax.dev.forte.fragments.LoadingFragment;
+import com.audax.dev.forte.fragments.MapsFragment;
 import com.audax.dev.forte.maps.MapsClient;
 import com.audax.dev.forte.util.SystemUiHider;
+import com.google.android.gms.maps.SupportMapFragment;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -57,17 +63,14 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	 */
 	private SystemUiHider mSystemUiHider;
 	
+	private MapsFragment mapsFragment;
+	
 	private MapsClient mapsClient;
 	
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		//setContentView(R.layout.activity_forte_mobile);
-		setContentView(R.layout.main);
+	private void setupOld() {
+		setContentView(R.layout.main_old);
 		//Simulate Progress
-		final ProgressBar pb = (ProgressBar)this.findViewById(R.id.progressBar1);
+		final ProgressBar pb = (ProgressBar)this.findViewById(R.id.load_screen_progress_bar);
 		
 		final View homeButton = findViewById(R.id.btn_home);
 		
@@ -173,6 +176,40 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 		 * findViewById(R.id.dummy_button).setOnTouchListener(
 		 * mDelayHideTouchListener);
 		 */
+		
+	}
+	
+	private void setupNew() {
+		setContentView(R.layout.main);
+		LoadingFragment lf = (LoadingFragment)
+				this.getSupportFragmentManager().findFragmentById(R.id.loading_fragment);
+		lf.setCompleteTask(new Runnable() {
+			
+			@Override
+			public void run() {
+				switchToMapsFragment();
+			}
+		});
+		lf.startLoading();
+		
+	}
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//setContentView(R.layout.activity_forte_mobile);
+		this.setupOld();
+	}
+
+	protected void switchToMapsFragment() {
+		FragmentManager fm = this.getSupportFragmentManager();
+		FragmentTransaction trx = fm.beginTransaction();
+		if (mapsFragment == null) {
+			mapsFragment = new MapsFragment();
+		}
+		trx.replace(R.id.fragment_container, mapsFragment);
+		//trx.addToBackStack(null);
+		trx.commit();
+		
 	}
 
 	protected void showNearestCenter() {
@@ -331,7 +368,7 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 		if (firstTime) {
 			firstTime = false;
 			this.findViewById(R.id.btn_goto_map).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.progressBar1).setVisibility(View.GONE);
+			this.findViewById(R.id.load_screen_progress_bar).setVisibility(View.GONE);
 		}
 		TextView status = (TextView)this.findViewById(R.id.next_station_label);
 		status.setText(String.format(this.getString(R.string.next_station), this.getString(R.string.demo_loc), "124Km"));

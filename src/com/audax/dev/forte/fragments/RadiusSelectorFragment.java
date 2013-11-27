@@ -1,4 +1,4 @@
-package com.audax.dev.forte;
+package com.audax.dev.forte.fragments;
 
 import android.app.Fragment;
 

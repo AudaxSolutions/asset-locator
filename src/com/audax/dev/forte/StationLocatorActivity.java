@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.audax.dev.forte.data.Center;
 import com.audax.dev.forte.data.Repository;
+import com.audax.dev.forte.fragments.NearestCenterFragmentX;
+import com.audax.dev.forte.fragments.RadiusSelectorFragment;
 import com.audax.dev.forte.maps.ForteCenterMapsInterractions;
 import com.audax.dev.forte.maps.LocationUtils;
 

@@ -56,7 +56,7 @@
         <item>10%s</item>
     </string-array>
     <string name="locate_stations">Locate Stations</string>
-    <string name="animate_center_focus">true</string>
+    <string name="animate_center_focus">false</string>
     <string name="no_centers_within">No center within %1$.1f%2$s was found</string>
 
 </resources>

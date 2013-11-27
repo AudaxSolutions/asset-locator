@@ -1,4 +1,4 @@
-package com.audax.dev.forte;
+package com.audax.dev.forte.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.audax.dev.forte.ProductsAdapter;
 import com.audax.dev.forte.data.Product;
 import com.audax.dev.forte.data.Repository;
 

@@ -1,4 +1,4 @@
-package com.audax.dev.forte;
+package com.audax.dev.forte.fragments;
 
 import java.util.UUID;
 
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.audax.dev.forte.ProductDetailActivity;
+import com.audax.dev.forte.ProductListActivity;
+import com.audax.dev.forte.R;
 import com.audax.dev.forte.data.Product;
 import com.audax.dev.forte.data.Repository;
 

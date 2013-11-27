@@ -35,7 +35,7 @@
         android:visibility="invisible" />
 
     <ProgressBar
-        android:id="@+id/progressBar1"
+        android:id="@+id/load_screen_progress_bar"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

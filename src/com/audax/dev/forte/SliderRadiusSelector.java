@@ -1,5 +1,6 @@
 package com.audax.dev.forte;
 
+import com.audax.dev.forte.fragments.RadiusSelectorFragment;
 import com.audax.dev.forte.maps.LocationUtils;
 
 import android.os.Bundle;

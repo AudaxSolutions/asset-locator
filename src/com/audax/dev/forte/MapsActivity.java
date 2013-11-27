@@ -38,6 +38,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		mapsItx.prepareMap();
 		
 		final Handler handler = new Handler();
+		
 		handler.postAtTime(new Runnable() {
 			
 			@Override
@@ -63,8 +64,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 	private void setupActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
-	
-	
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

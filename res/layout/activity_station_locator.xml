@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/nearest_location_fragment"
-        android:name="com.audax.dev.forte.NearestCenterFragmentX"
+        android:name="com.audax.dev.forte.fragments.NearestCenterFragmentX"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp" />

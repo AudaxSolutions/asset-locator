@@ -128,5 +128,21 @@ public class Center implements Cloneable {
 	}
 	
 	private Uri pageUrl, imageUri;
+	public Uri getPageUrl() {
+		return pageUrl;
+	}
+
+	public void setPageUrl(Uri pageUrl) {
+		this.pageUrl = pageUrl;
+	}
+
+	public Uri getImageUri() {
+		return imageUri;
+	}
+
+	public void setImageUri(Uri imageUri) {
+		this.imageUri = imageUri;
+	}
+	
 	
 }

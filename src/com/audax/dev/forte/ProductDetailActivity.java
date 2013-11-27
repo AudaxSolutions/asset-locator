@@ -1,5 +1,7 @@
 package com.audax.dev.forte;
 
+import com.audax.dev.forte.fragments.ProductDetailFragment;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;

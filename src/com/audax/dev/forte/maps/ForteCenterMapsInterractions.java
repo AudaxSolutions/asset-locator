@@ -36,8 +36,6 @@ public class ForteCenterMapsInterractions {
 	
 	private com.audax.dev.forte.maps.MapsClient mapsClient;
 	
-	
-	
 	public ForteCenterMapsInterractions(Activity context, int mapsFragmentId,
 			MapsClient mapsClient) {
 		super();
@@ -45,8 +43,25 @@ public class ForteCenterMapsInterractions {
 		this.mapsFragmentId = mapsFragmentId;
 		this.mapsClient = mapsClient;
 	}
+	
+	
+	
+
+	public ForteCenterMapsInterractions(Activity context, GoogleMap googleMap,
+			MapsClient mapsClient) {
+		super();
+		this.context = context;
+		this.googleMap = googleMap;
+		this.mapsClient = mapsClient;
+	}
+
+
+	private boolean setupCompleted = false;
 
 	public void prepareMap() {
+		if (!setupCompleted) {
+			setupCompleted = true;
+		}
 		if (googleMap == null) {
 			
 			if (mapsClient == null) {
@@ -72,38 +87,40 @@ public class ForteCenterMapsInterractions {
 			}
 			*/
 			
-		    if (googleMap != null) {
-		    	
-		    	googleMap.setLocationSource(mapsClient);
-		    	
-		    	googleMap.setMyLocationEnabled(true);
-		    	
-		    	googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
-		    	
-		    	googleMap.setOnInfoWindowClickListener(new  GoogleMap.OnInfoWindowClickListener() {
-
-					@Override
-					public void onInfoWindowClick(Marker arg0) {
-						Center center = getCenter(arg0);
-						requestDrivingDirections(center);
-					}
-		    		
-		    	});
-		    	
-		    	googleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-					
-					@Override
-					public void onCameraChange(CameraPosition arg0) {
-						//Location l = client.getCurrentLocation();
-						//Log.w("Location", "Could not find current");
-						
-						googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Repository.PT_LAGOS, 10));
-						
-						googleMap.setOnCameraChangeListener(null);
-					}
-				});
-		    }
+		    
 		}
+		
+		if (googleMap != null) {
+	    	
+	    	googleMap.setLocationSource(mapsClient);
+	    	
+	    	googleMap.setMyLocationEnabled(true);
+	    	
+	    	googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
+	    	
+	    	googleMap.setOnInfoWindowClickListener(new  GoogleMap.OnInfoWindowClickListener() {
+
+				@Override
+				public void onInfoWindowClick(Marker arg0) {
+					Center center = getCenter(arg0);
+					requestDrivingDirections(center);
+				}
+	    		
+	    	});
+	    	
+	    	googleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+				
+				@Override
+				public void onCameraChange(CameraPosition arg0) {
+					//Location l = client.getCurrentLocation();
+					//Log.w("Location", "Could not find current");
+					
+					googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Repository.PT_LAGOS, 10));
+					
+					googleMap.setOnCameraChangeListener(null);
+				}
+			});
+	    }
 	}
 
 	public void stopListening() {
