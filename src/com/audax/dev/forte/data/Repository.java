@@ -21,6 +21,7 @@ public class Repository {
 	
 	
 	private static final String[][] CENTERS = {
+		{"Forte Oil - Awolowo", "Service Station", "1.4mi", "6:00AM - 10:00PM", "6.44231, 3.41780", "Awolowo"},
 		{"Forte Oil - Eleko", "Filling Station", "1.4mi", "6:00AM - 10:00PM", "6.483161,3.596596", "Eleko"},
 		{"Forte Oil - Alasia", "Service Station", "0.6mi", "6:00AM - 10:00PM", "6.495782,3.573936", "Alasia"},
 		{"Forte Oil - Ago Iwoye", "Filling Station", "12mi", "6:00AM - 10:00PM", "6.812751,3.910776", "Ago Iwoye"},
