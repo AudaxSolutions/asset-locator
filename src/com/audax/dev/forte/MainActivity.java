@@ -1,14 +1,13 @@
 package com.audax.dev.forte;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import java.lang.reflect.Field;
+
 import android.app.Dialog;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,15 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AnticipateInterpolator;
-import android.widget.ProgressBar;
+import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.audax.dev.forte.fragments.ForteMapsFragment;
 import com.audax.dev.forte.fragments.LoadingFragment;
-import com.audax.dev.forte.fragments.MapsFragment;
 import com.audax.dev.forte.maps.MapsClient;
 import com.audax.dev.forte.util.SystemUiHider;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.audax.dev.forte.web.ApplicationRegistry;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -49,144 +47,33 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
 	 * will show the system UI visibility upon interaction.
 	 */
-	private static final boolean TOGGLE_ON_CLICK = true;
+//	private static final boolean TOGGLE_ON_CLICK = true;
 
 	/**
 	 * The flags to pass to {@link SystemUiHider#getInstance}.
 	 */
-	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
+	//private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
 	
-	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+	//private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 	/**
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
-	private SystemUiHider mSystemUiHider;
+	//private SystemUiHider mSystemUiHider;
 	
-	private MapsFragment mapsFragment;
-	
-	private MapsClient mapsClient;
-	
-	private void setupOld() {
-		setContentView(R.layout.main_old);
-		//Simulate Progress
-		final ProgressBar pb = (ProgressBar)this.findViewById(R.id.load_screen_progress_bar);
-		
-		final View homeButton = findViewById(R.id.btn_home);
-		
-		
-		
-		homeButton.setOnClickListener(this);
-		
-		//Simulate 'loading'
-		
-		ValueAnimator anim = ValueAnimator.ofInt(0, pb.getMax());
-		
-		anim.setDuration(2000);
-		
-		anim.setInterpolator(new AnticipateInterpolator());
-		
-		anim.addListener(new AnimatorListenerAdapter() {
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				homeButton.setVisibility(View.VISIBLE);
-				showNearestCenter();
-			}
-		});
-		
-		anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-			@Override
-			public void onAnimationUpdate(ValueAnimator animation) {
-				pb.setProgress((Integer)animation.getAnimatedValue());
-			}});
-		
-		anim.start();
-		
-		//mapsClient = new MapsClient(this);
-		
-		//mapsClient.setClientListener(this);
-
-		/*final View controlsView = findViewById(R.id.parent);
-		final View contentView = findViewById(R.id.container);
-		// final View controlsView =
-		// findViewById(R.id.fullscreen_content_controls);
-
-		// Set up an instance of SystemUiHider to control the system UI for
-		// this activity.
-		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-				HIDER_FLAGS);
-		mSystemUiHider.setup();
-		mSystemUiHider
-				.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-					// Cached values.
-					int mControlsHeight;
-					int mShortAnimTime;
-
-					@Override
-					@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-					public void onVisibilityChange(boolean visible) {
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-							// If the ViewPropertyAnimator API is available
-							// (Honeycomb MR2 and later), use it to animate the
-							// in-layout UI controls at the bottom of the
-							// screen.
-							if (mControlsHeight == 0) {
-								mControlsHeight = controlsView.getHeight();
-							}
-							if (mShortAnimTime == 0) {
-								mShortAnimTime = getResources().getInteger(
-										android.R.integer.config_shortAnimTime);
-							}
-							controlsView
-									.animate()
-									.translationY(visible ? 0 : mControlsHeight)
-									.setDuration(mShortAnimTime);
-						} else {
-							// If the ViewPropertyAnimator APIs aren't
-							// available, simply show or hide the in-layout UI
-							// controls.
-							controlsView.setVisibility(visible ? View.VISIBLE
-									: View.GONE);
-						}
-
-						if (visible && AUTO_HIDE) {
-							// Schedule a hide().
-							delayedHide(AUTO_HIDE_DELAY_MILLIS);
-						}
-					}
-				});
-*/
-		// Set up the user interaction to manually show or hide the system UI.
-		/*contentView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (TOGGLE_ON_CLICK) {
-					mSystemUiHider.toggle();
-				} else {
-					mSystemUiHider.show();
-				}
-			}
-		});
-*/
-		// Upon interacting with UI controls, delay any scheduled hide()
-		// operations to prevent the jarring behavior of controls going away
-		// while interacting with the UI.
-		/*
-		 * findViewById(R.id.dummy_button).setOnTouchListener(
-		 * mDelayHideTouchListener);
-		 */
-		
-	}
+	private ForteMapsFragment mapsFragment;
 	
 	private void setupNew() {
 		setContentView(R.layout.main);
+		//Hide initialy
+		hideMenuItems(true);
 		LoadingFragment lf = (LoadingFragment)
 				this.getSupportFragmentManager().findFragmentById(R.id.loading_fragment);
 		lf.setCompleteTask(new Runnable() {
 			
 			@Override
 			public void run() {
+				//ab.show();
 				switchToMapsFragment();
 			}
 		});
@@ -197,19 +84,45 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_forte_mobile);
-		this.setupOld();
+		try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception ex) {
+	        // Ignore
+	    }
+		this.setupNew();
 	}
 
+	
 	protected void switchToMapsFragment() {
+		this.hideMenuItems(false);
+		
 		FragmentManager fm = this.getSupportFragmentManager();
 		FragmentTransaction trx = fm.beginTransaction();
 		if (mapsFragment == null) {
-			mapsFragment = new MapsFragment();
+			mapsFragment = new ForteMapsFragment ();
 		}
-		trx.replace(R.id.fragment_container, mapsFragment);
+		
+		trx.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		
+		LoadingFragment lf = (LoadingFragment)
+				fm.findFragmentById(R.id.loading_fragment);
+		
+		trx.remove(lf);
+		
+		trx.add(R.id.fragment_container, mapsFragment, "maps");
+		
+		
+		//I don't want user to switch back to 'loading'
 		//trx.addToBackStack(null);
+		
 		trx.commit();
 		
+		trx.show(mapsFragment);
 	}
 
 	protected void showNearestCenter() {
@@ -221,7 +134,28 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 		Intent itt = new Intent(this, MainMenuActivity.class);
 		this.startActivity(itt);
 	}
+	
+	private Menu __menu;
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+//		// Inflate the menu; this adds items to the action bar if it is present.
+//		getMenuInflater().inflate(R.menu.main_menu, menu);
+//		__menu = menu;
+//		return true;
+		return super.onCreateOptionsMenu(menu);
+	}
 
+	private void hideMenuItems(boolean b) {
+		if (__menu == null) {
+			return;
+		}
+		for (int j = 0, len = __menu.size(); j < len; j++) {
+			__menu.getItem(j).setVisible(!b);
+		}
+		
+		//ActionBar bar = this.getActionBar();
+		
+	}
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
@@ -267,34 +201,6 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		
-		/*int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-		if (code == ConnectionResult.SUCCESS) {
-			Log.i("Google Play", "Service is available");
-			
-			this.mapsClient.start();
-		} else {
-			 GooglePlayServicesUtil.getErrorDialog(code, this,
-					CONNECTION_FAILURE_RESOLUTION_REQUEST);
-			 Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-	                    code,
-	                    this,
-	                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-	            // If Google Play services can provide an error dialog
-	            if (errorDialog != null) {
-	                // Create a new DialogFragment for the error dialog
-	                ErrorDialogFragment errorFragment =
-	                        new ErrorDialogFragment();
-	                // Set the dialog in the DialogFragment
-	                errorFragment.setDialog(errorDialog);
-	                // Show the error dialog in the DialogFragment
-	                
-	                errorFragment.show(getSupportFragmentManager(),
-	                        "Location Updates");
-	            }
-		}*/
 	}
 
 	
@@ -302,12 +208,28 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.home:
-			Intent itt = new Intent(this, MainMenuActivity.class);
+		case R.id.main_item_list:
+			Intent itt = new Intent(this, CenterListActivity.class);
+			this.startActivity(itt);
+			return true;
+		case R.id.main_item_news:
+			itt = new Intent(this, WebViewActivity.class);
+			itt.putExtra("application", ApplicationRegistry.APP_NEWS);
+			this.startActivity(itt);
+			return true;
+		case R.id.main_item_products:
+			itt = new Intent(this, ProductListActivity.class);
 			this.startActivity(itt);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+//		switch (item.getItemId()) {
+//		case R.id.home:
+//			Intent itt = new Intent(this, MainMenuActivity.class);
+//			this.startActivity(itt);
+//			return true;
+//		}
+//		return super.onOptionsItemSelected(item);
 	}
 
 
@@ -340,30 +262,11 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 		this.startActivity(mapIntent);
 	}
 	
-	private Menu _menu;
 	
-	private void showMenu(boolean show) {
-		if (_menu != null) {
-			int count = _menu.size();
-			for (int k = 0; k < count; k++) {
-				_menu.getItem(k).setVisible(show);
-			}
-		}
-	}
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		_menu = menu;
-		//Initially hide. Show when progress is complete
-		showMenu(false);
-		return true;
-	}
-
 
 	private boolean firstTime = true;
 	@Override
-	public void onLocationChanged(MapsClient client) {
+	public void onLocationChanged(MapsClient client, Location location) {
 		//Location location = client.getCurrentLocation();
 		if (firstTime) {
 			firstTime = false;
@@ -379,9 +282,9 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	protected void onStop() {
 		
 		super.onStop();
-		if (mapsClient != null) {
-			mapsClient.stop();
-		}
+//		if (mapsClient != null) {
+//			mapsClient.stop();
+//		}
 		
 	}
 

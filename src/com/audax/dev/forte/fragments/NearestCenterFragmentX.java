@@ -136,35 +136,7 @@ public class NearestCenterFragmentX extends Fragment implements MapsClient.Clien
 		return mapsClient;
 	}
 	
-	@Override
-	public void onLocationChanged(MapsClient client) {
-		Repository repo = new Repository();
-		Collection<Center> centers = repo.getAvailableCenters();
-		Location loc = client.getCurrentLocation();
-		LatLng ll = new LatLng(loc.getLatitude(), loc.getLongitude());
-		client.stop();
-		Center closest = LocationUtils.getClosest(ll, centers);
-		
-		String distanceText = String.format("%1$.2f%2$s/%3$.2f%4$s", closest.getDistanceInMiles(),
-					this.getString(R.string.miles),
-					closest.getDistanceInMiles() * LocationUtils.MILES_TO_KILO,
-					this.getActivity().getString(R.string.kilometers));
-		
-		closest.setDistance(distanceText);
-		
-		this.closestCenter = closest;
-		((TextView)this.rootView
-					.findViewById(R.id.lbl_nearest_center_name))
-					.setText(closest.getName());
-		((TextView)this.rootView
-				.findViewById(R.id.lbl_distance_away))
-				.setText(distanceText);
-		
-		this.rootView.findViewById(R.id.lbl_loading_nearest).setVisibility(View.GONE);
-		this.rootView.findViewById(R.id.lbl_nearest_center_name).setVisibility(View.VISIBLE);
-		this.rootView.findViewById(R.id.lbl_distance_away).setVisibility(View.VISIBLE);
-		this.rootView.findViewById(R.id.lnk_view_in_map).setVisibility(View.VISIBLE);
-	}
+	
 
 	@Override
 	public void onClick(View v) {
@@ -182,6 +154,36 @@ public class NearestCenterFragmentX extends Fragment implements MapsClient.Clien
 			}
 			break;
 		}
+	}
+
+	@Override
+	public void onLocationChanged(MapsClient client, Location location) {
+		Repository repo = new Repository();
+		Collection<Center> centers = repo.getAvailableCenters(getActivity());
+		Location loc = location;
+		LatLng ll = new LatLng(loc.getLatitude(), loc.getLongitude());
+		client.stop();
+		Center closest = LocationUtils.getClosest(ll, centers);
+		
+		String distanceText = String.format("%1$.2f%2$s/%3$.2f%4$s", closest.getDistanceInMiles(getActivity()),
+					this.getString(R.string.miles),
+					closest.getDistanceInKilometers(getActivity()),
+					this.getActivity().getString(R.string.kilometers));
+		
+		closest.setDistance(distanceText);
+		
+		this.closestCenter = closest;
+		((TextView)this.rootView
+					.findViewById(R.id.lbl_nearest_center_name))
+					.setText(closest.getName());
+		((TextView)this.rootView
+				.findViewById(R.id.lbl_distance_away))
+				.setText(distanceText);
+		
+		this.rootView.findViewById(R.id.lbl_loading_nearest).setVisibility(View.GONE);
+		this.rootView.findViewById(R.id.lbl_nearest_center_name).setVisibility(View.VISIBLE);
+		this.rootView.findViewById(R.id.lbl_distance_away).setVisibility(View.VISIBLE);
+		this.rootView.findViewById(R.id.lnk_view_in_map).setVisibility(View.VISIBLE);
 	}
 
 }

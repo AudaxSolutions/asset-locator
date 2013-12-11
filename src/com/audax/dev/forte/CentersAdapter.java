@@ -10,6 +10,7 @@ import android.location.Location;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.audax.dev.forte.data.Center;
@@ -110,6 +111,9 @@ public class CentersAdapter extends BaseAdapter {
 		
 		((TextView)arg1.findViewById(R.id.lbl_center_availability))
 		.setText(center.getAvailability());
+		
+		((ImageView)arg1.findViewById(R.id.list_item_center_icon))
+		.setImageResource(center.getItemIconResource(this.context));
 		return arg1;
 	}
 					

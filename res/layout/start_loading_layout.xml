@@ -3,7 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/forte_start_screen"
+    android:background="@drawable/forte_oild_splash"
     android:orientation="vertical" >
 
     <ProgressBar
@@ -19,9 +19,10 @@
         android:id="@+id/load_screen_wait_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="160dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="165dp"
         android:text="@string/loading"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

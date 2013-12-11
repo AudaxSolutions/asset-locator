@@ -121,8 +121,8 @@ public class StationLocatorActivity extends Activity {
 		
 		Repository repo = new Repository();
 		
-		Collection<Center> centers = LocationUtils.collectionCentersCloseTo(nFr.getCurrentLocation(),
-				radius, repo.getAvailableCenters());
+		Collection<Center> centers = LocationUtils.collectCentersCloseTo(nFr.getCurrentLocation(),
+				radius, repo.getAvailableCenters(this));
 		
 		if (centers.isEmpty()) {
 			

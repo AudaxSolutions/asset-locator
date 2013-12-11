@@ -4,6 +4,7 @@ package com.audax.dev.forte;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -11,45 +12,69 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.audax.dev.forte.data.Center;
+import com.audax.dev.forte.data.CentersLoaderTask;
 import com.audax.dev.forte.data.Repository;
+import com.audax.dev.forte.maps.LocationUtils;
 import com.audax.dev.forte.maps.MapsClient;
 
 public class CenterListActivity extends ListActivity implements MapsClient.ClientListener {
 	
 	private CentersAdapter centersAdapter;
-
+	private MapsClient client;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.centers_list_view);
 		
-		centersAdapter = new CentersAdapter(this);
+		client = new MapsClient(this);
 		
-		//ListView listView = (ListView)this.findViewById(R.id.listView);
-		
-		//ListView listView = this.getListView();
-		
-		this.setListAdapter(centersAdapter);
-		
-		//listView.setAdapter(adapter);
-		
-		Repository repo = new Repository();
-		
-		centersAdapter.addAll(repo.getAvailableCenters());
-		
+		client.setClientListener(new MapsClient.ClientListenerAdapter() {
+			
+			@Override
+			public void onLocationChanged(MapsClient client, Location location) {
+				client.stop();
+				loadCenters(location);
+			}
+		});
+		client.start();
 		// Show the Up button in the action bar.
 		setupActionBar();
 	}
 	
 	
 
+	protected void loadCenters(final Location location) {
+		centersAdapter = new CentersAdapter(this);
+		
+		setListAdapter(centersAdapter);
+		
+		CentersLoaderTask task = new CentersLoaderTask(this);
+		
+		task.setLoaderListener(new CentersLoaderTask.LoaderListener() {
+			
+			@Override
+			public void onLoadStarted(CentersLoaderTask loader) {
+			}
+			
+			@Override
+			public void onCompleted(CentersLoaderTask loader) {
+				
+			}
+			
+			@Override
+			public void onCenterFound(Center center, CentersLoaderTask loader) {
+				LocationUtils.updateDistance(location, center);
+				centersAdapter.add(center);
+			}
+		});
+		task.execute();
+	}
+
+
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//Just fetch the location once
-		MapsClient client = new MapsClient(this);
-		client.setClientListener(this);
-		client.start();
 	}
 
 
@@ -109,10 +134,12 @@ public class CenterListActivity extends ListActivity implements MapsClient.Clien
 		this.startActivity(itt);
 	}
 
+
+
 	@Override
-	public void onLocationChanged(MapsClient client) {
+	public void onLocationChanged(MapsClient client, Location location) {
 		if (this.centersAdapter != null) {
-			this.centersAdapter.setCurrentLocation(client.getCurrentLocation());
+			this.centersAdapter.setCurrentLocation(location);
 			client.stop();
 		}
 	}	

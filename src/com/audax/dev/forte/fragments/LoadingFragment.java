@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.ProgressBar;
 
@@ -48,6 +49,8 @@ public class LoadingFragment extends Fragment {
 		
 		anim.setDuration(2000);
 		
+		//anim.setRepeatCount(ValueAnimator.INFINITE);
+		
 		anim.setInterpolator(new AnticipateInterpolator());
 		
 		anim.addListener(new AnimatorListenerAdapter() {
@@ -64,6 +67,7 @@ public class LoadingFragment extends Fragment {
 				progressBar.setProgress((Integer)animation.getAnimatedValue());
 			}});
 		
+		//currentAnimator = anim;
 		anim.start();
 		
 	}
@@ -81,9 +85,10 @@ public class LoadingFragment extends Fragment {
 	private void startWaitAnim() {
 		ObjectAnimator anim = 
 					ObjectAnimator.ofFloat(loadingLabel, "alpha", 0f);
-		
-		anim.setDuration(1000);
+		anim.setDuration(getActivity().getResources().getInteger(R.integer.loading_animation_timeout));
 		anim.setRepeatCount(ValueAnimator.INFINITE);
+		anim.setRepeatMode(ObjectAnimator.REVERSE);
+		anim.setInterpolator(new AccelerateDecelerateInterpolator());
 		currentAnimator = anim;
 		anim.start();
 		

@@ -6,46 +6,59 @@
     android:background="@drawable/info_window_bg"
     android:clickable="false"
     android:orientation="horizontal"
-    android:padding="10dp" >
+    android:padding="6dp" >
 
-    <TextView
-        android:id="@+id/lbl_info_location"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/lbl_info_center_name"
-        android:layout_below="@+id/lbl_info_center_name"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:layout_alignTop="@+id/marker_image_view"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/lbl_drive_direction"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_info_center_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/link"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/lbl_info_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/lbl_info_availability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/gray" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/lbl_info_center_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView1"
-        android:layout_marginLeft="26dp"
-        android:layout_toRightOf="@+id/imageView1"
-        android:clickable="true"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/link"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/lbl_info_availability"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/lbl_info_location"
-        android:layout_below="@+id/imageView1"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/gray" />
-
-    <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/lbl_drive_direction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_driving" />
+        android:layout_below="@+id/marker_image_view"
+        android:layout_marginLeft="14dp"
+        android:text="@string/drive_there"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <ImageView
+        android:id="@+id/marker_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lbl_drive_direction"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_driving"
+        android:tag="item_image" />
 
 </RelativeLayout>

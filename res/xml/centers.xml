@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<centers>
+    <state name="ABIA"></state>
+    <state name="ADAMAWA"></state>
+    <state name="AKWAIBOM"></state>
+    <state name="ANAMBRA"></state>
+    <state name="BAUCHI"></state>
+    <state name="BAYELSA"></state>
+    <state name="BENUE"></state>
+    <state name="BORNO"></state>
+    <state name="CROSSRIVER"></state>
+    <state name="DELTA"></state>
+    <state name="EBONYI"></state>
+    <state name="EDO"></state>
+    <state name="EKITI"></state>
+    <state name="ENUGU"></state>
+    <state name="FCT"></state>
+    <state name="GOMBE"></state>
+    <state name="IMO"></state>
+    <state name="JIGAWA"></state>
+    <state name="KADUNA"></state>
+    <state name="KANO"></state>
+    <state name="KATSINA"></state>
+    <state name="KEBBI"></state>
+    <state name="KOGI"></state>
+    <state name="KWARA"></state>
+    <state name="LAGOS">
+        <item name="Forte Oil - Awolowo" type="Service Station" position="6.44201x3.41763" />
+        <item name="Forte Oil - Eleko" type="Filling Station" position="6.47295x3.59766" />
+        <item name="Forte Oil - Alasia" type="Service Station" position="6.48484x3.57499" />
+        <item name="Forte Oil - Ago Iwoye 1" type="Filling Station" position="6.93547x3.86603" />
+        <item name="Forte Oil - Wharf Road" type="Service Station" position="6.46388x3.36410" />
+        <item name="Forte Oil - Oba Akran" type="Service Station" position="6.61233x3.33593" />
+        <item name="Forte Oil - Somolu" type="Gas Station" position="6.54842x3.38416" />
+        <item name="Forte Oil - Industrial Estate" type="Service Station" position="6.53754x3.34632" />
+        <item name="Forte Oil - Western Avenue" type="Service Station" position="6.51660x3.36510" />
+        <item name="Forte Oil - Ijegun - Ikotun" type="Filling Station" position="6.63766x3.35580" />
+        <item name="Forte Oil - Ijora Badia" type="Service Station" position="6.46946x3.37347" />
+        <item name="Forte Oil - Cele Bus Stop" type="Service Station" position="6.48833x3.32461" />
+        <item name="Forte Oil - Oshodi - Apapa" type="Service Station" position="6.48838x3.32462" />
+        <item name="Forte Oil - Shipeolu Street" type="Gas Station" position="6.53403x3.36812" />
+        <item name="Forte Oil - Shomolu-Ikorodu Road" type="Service Station" position="6.55146x3.36680" />
+        <item name="Forte Oil - Gbagada" type="Filling Station" position="6.54802x3.38166" />
+        <item name="Forte Oil - Mushin" type="Filling Station" position="6.52734x3.35432" />
+        <item name="Forte Oil - Oluwole Street" type="Filling Station" position="6.53222x3.35246" />
+        <item name="Forte Oil - Oluwole Street" type="Gas Station" position="6.51886x3.39096" />
+        <item name="Forte Oil - Dan Fodio Blvd" type="Car Wash" position="6.51887x3.39096" />
+        <item name="Forte Oil - Commercial Road" type="Gas Station" position="6.51887x3.39096" />
+        <item name="Forte Oil - Itire" type="Filling Station" position="6.50000x3.35000" />
+        <item name="Forte Oil - N.R.C - Surulere" type="Service Station" position="6.49121x3.37227" />
+        <item name="Forte Oil - Ago Palace" type="Filling Station" position="6.50715x3.31053" />
+        <item name="Forte Oil - Igando" type="Filling Station" position="6.56579x3.25106" />
+        <item name="Forte Oil - Igando Road" type="Gas Station" position="6.55207x3.24262" />
+        <item name="Forte Oil - Orisunbare" type="Filling Station" position="6.57034x3.30338" />
+        <item name="Forte Oil - Okota" type="Filling Station" position="6.49998x3.30475" />
+        <item name="Forte Oil - Isolo - Ikotun" type="Service Station" position="6.53928x3.28739" />
+        <item name="Forte Oil - Paradise Bus Stop" type="Service Station" position="6.53928x3.28741" />
+        <item name="Forte Oil - Moloney" type="Service Station" position="6.61233x3.33592" />
+        <item name="Forte Oil - Campbell" type="Service Station" position="6.45048x3.39496" />
+        <item name="Forte Oil - Bank Road - Ikoyi" type="Service Station" position="6.45157x3.41381" />
+        <item name="Forte Oil - Boundary" type="Service Station" position="6.45005x3.36665" />
+        <item name="Forte Oil - Sabo Oniba" type="Service Station" position="6.46000x3.33285" />
+        <item name="Forte Oil - Awoyaya" type="Service Station" position="6.45647x3.41895" />
+        <item name="Forte Oil - Ibeju - Lekki" type="Service Station" position="6.45647x3.41896" />
+        <item name="Forte Oil - Festac" type="Service Station" position="6.47031x3.29242" />
+        <item name="Forte Oil - Egbe 1" type="Filling Station" position="6.47640x3.20214" />
+        <item name="Forte Oil - Airport Road-Ikeja" type="Service Station" position="6.56451x3.32113" />
+        <item name="Forte Oil - Isheri Osun" type="Service Station" position="6.52532x3.29419" />
+        <item name="Forte Oil - Liasu Road" type="Filling Station" position="6.55640x3.280003" />
+        <item name="Forte Oil - Atan Ota" type="Service Station" position="6.67695x3.23343" />
+        <item name="Forte Oil - Passport" type="Service Station" position="6.61307x3.35765" />
+        <item name="Forte Oil - Ayobo" type="Filling Station" position="6.60210x3.23233" />
+        <item name="Forte Oil - Idimu-Egbeda" type="Service Station" position="6.59429x3.28788" />
+        <item name="Forte Oil - Adiyan" type="Filling Station" position="6.69421x3.30240" />
+        <item name="Forte Oil - Alakuko" type="Service Station" position="6.68908x3.27974" />
+        <item name="Forte Oil - Bank Road - MMR" type="Service Station" position="6.45121x3.42242" />
+        <item name="Forte Oil - Sabowode" type="Filling Station" position="6.44120x3.41798" />
+        <item name="Forte Oil - Agege" type="Filling Station" position="6.63708x3.30264" />
+        <item name="Forte Oil - Cement" type="Service Station" position="6.66326x3.28355" />
+        <item name="Forte Oil - Abule Taylor" type="Service Station" position="6.66325x3.28355" />
+        <item name="Forte Oil - Agege" type="Service Station" position="6.63708x3.30264" />
+    </state>
+    <state name="NASARAWA"></state>
+    <state name="NIGER"></state>
+    <state name="OGUN">
+        <item name="Forte Oil - Ifo" type="Service Station" position="6.81667x3.19999" />
+        <item name="Forte Oil - 2nd Express" type="Service Station" position="6.84248x3.64486" />
+        <item name="Forte Oil - Iperu" type="Service Station" position="6.91340x3.672777" />
+        <item name="Forte Oil - Arepo" type="Service Station" position="6.9424x3.6448" />
+        <item name="Forte Oil - Egan" type="Service Station" position="6.670x3.452" />
+        <item name="Forte Oil - Egberigbe" type="Service Station" position="6.61549x3.56896" />
+        <item name="Forte Oil - Ejinrin" type="Service Station" position="6.7112x3.8680" />
+        <item name="Forte Oil - Ago Iwoye 2" type="Service Station" position="6.83517x3.88427" />
+        <item name="Forte Oil - Mobalifon" type="Service Station" position="6.82090x3.92083" />
+        <item name="Forte Oil - Isokun" type="Service Station" position="6.80289x3.95074" />
+        <item name="Forte Oil - Folagbade" type="Service Station" position="6.84127x3.92364" />
+        <item name="Forte Oil - Ijebu-Ife" type="Service Station" position="6.79355x4.63659" />
+        <item name="Forte Oil - Ago Iwoye 2" type="Filling Station" position="6.93550x3.86603" />
+        <item name="Forte Oil - Ijebu-Igbo" type="Service Station" position="6.99346x4.00467" />
+        <item name="Forte Oil - Olojowo" type="Service Station" position="6.99346x4.00467" />
+        <item name="Forte Oil - Ake" type="Service Station" position="7.16418x3.35298" />
+        <item name="Forte Oil - Aatan" type="Service Station" position="7.16986x3.36284" />
+        <item name="Forte Oil - Mao Saje" type="Service Station" position="7.13794x3.33908" />
+        <item name="Forte Oil - Aiyetoro" type="Service Station" position="7.2336x3.0334" />
+    </state>
+    <state name="ONDO"></state>
+    <state name="OSUN"></state>
+    <state name="OYO">
+        <item name="Forte Oil - Apata(NNPC) Road" type="Service Station" position="8.00000x3.18333" />
+        <item name="Forte Oil - Oki-Alekuso Bus Stop" type="Service Station" position="7.40194x3.393939" />
+        <item name="Forte Oil - Yidi" type="Service Station" position="7.39890x3.92357" />
+        <item name="Forte Oil - Olunde Olomi" type="Service Station" position="7.39644x3.91667" />
+    </state>    
+    <state name="PLATEAU"></state>
+    <state name="RIVERS"></state>
+    <state name="SOKOTO"></state>
+    <state name="TARABA"></state>
+    <state name="YOBE"></state>
+    <state name="ZAMFARA"></state>
+</centers>

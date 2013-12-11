@@ -2,6 +2,7 @@ package com.audax.dev.forte.maps;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import android.location.Location;
 import android.net.Uri;
@@ -11,22 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class LocationUtils {
 	
-	private static class LocationMap {
-		public Center center;
-		public float distance;
-		public LocationMap(Center center, float distance) {
-			super();
-			this.center = center;
-			this.distance = distance;
-		}
-		public Center getCenter() {
-			center.setDistanceInMiles(distance);
-			return center;
-		}
-		
-		
-		
-	}
+	
 	
 	public static final float MILES_TO_KILO = 1.60934f;
 	
@@ -48,8 +34,12 @@ public class LocationUtils {
 			Location.distanceBetween(fromPoint.latitude, fromPoint.longitude,
 						c.getPosition().latitude, c.getPosition().longitude, results);
 			
-			c.setDistanceInMiles(results[0]);
+			c.setDistanceInMeters(results[0]);
 		}
+	}
+	
+	public static LatLng toLatLng(Location loc) {
+		return new LatLng(loc.getLatitude(), loc.getLongitude());
 	}
 	
 	public static void updateDistance(LatLng fromPoint, Center toCenter) {
@@ -57,7 +47,27 @@ public class LocationUtils {
 		Location.distanceBetween(fromPoint.latitude, fromPoint.longitude,
 				toCenter.getPosition().latitude, toCenter.getPosition().longitude, results);
 	
-		toCenter.setDistanceInMiles(results[0]);
+		toCenter.setDistanceInMeters(results[0]);
+	}
+	
+	public static Center getClosestCenter(Location fromPoint, Iterator<Center> centers) {
+		return getClosestCenter(fromPoint, centers, -1);
+	}
+	public static Center getClosestCenter(Location fromPoint, Iterator<Center> centers, float maxDistance) {
+		Center closest = null;
+		float last = maxDistance;
+		float[] results = {0, 0, 0};
+		while (centers.hasNext()) {
+			Center c = centers.next();
+			Location.distanceBetween(fromPoint.getLatitude(), fromPoint.getLongitude(),
+					c.getPosition().latitude, c.getPosition().longitude, results);
+			if (last > results[0] || last < 0) {
+				last = results[0];
+				closest = c;
+			}
+		}
+		closest.setDistanceInMeters(last);
+		return closest;
 	}
 	
 	public static void updateDistance(Location fromPoint, Center toCenter) {
@@ -65,10 +75,14 @@ public class LocationUtils {
 		Location.distanceBetween(fromPoint.getLatitude(), fromPoint.getLongitude(),
 				toCenter.getPosition().latitude, toCenter.getPosition().longitude, results);
 	
-		toCenter.setDistanceInMiles(results[0]);
+		toCenter.setDistanceInMeters(results[0]);
 	}
 	
-	public static Collection<Center> collectionCentersCloseTo(Location location, float distance, Collection<Center> allCenters) {
+	
+	
+	
+	
+	public static Collection<Center> collectCentersCloseTo(Location location, float distance, Collection<Center> allCenters) {
 		ArrayList<Center> list = new ArrayList<Center>();
 		float[] results = {0, 0, 0};
 		for (Center c : allCenters) {
@@ -77,7 +91,7 @@ public class LocationUtils {
 			
 			if (results[0] <= distance) {
 				
-				c.setDistanceInMiles(results[0]);
+				c.setDistanceInMeters(results[0]);
 				
 				list.add(c);
 			}
@@ -96,30 +110,29 @@ public class LocationUtils {
 	 * @throws CloneNotSupportedException 
 	 */
 	public static Center getClosest(LatLng location, Collection<Center> centers) {
-		int len = centers.size();
-		if (len == 0) {
-			return null;
-		}
-		LocationMap[] maps = new LocationMap[len];
-		LocationMap closest = null;
-		
-		int idx = 0;
+//		int len = centers.size();
+//		if (len == 0) {
+//			return null;
+//		}
 		float[] results = {0, 0, 0};
+		Center closest = null;
+		float lastDistance = -1f;
 		for (Center c : centers) {
 			Location.distanceBetween(location.latitude, location.longitude,
 						c.getPosition().latitude, c.getPosition().longitude, results);
-			maps[idx++] = new LocationMap(c, results[0]);
-		}
-		
-		closest = maps[0];
-		
-		//Resolve closest
-		for (LocationMap map : maps) {
-			if (closest.distance > map.distance) {
-				closest = map;
+			if (lastDistance == -1f) {
+				lastDistance = results[0];
+				closest = c;
+			}else {
+				if (lastDistance < results[0]) {
+					lastDistance = results[0];
+					closest = c;
+				}
 			}
 		}
+		//Resolve closest
 		
-		return closest.getCenter();
+		
+		return closest;
 	}
 }

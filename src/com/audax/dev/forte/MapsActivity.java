@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.audax.dev.forte.data.Repository;
 import com.audax.dev.forte.maps.ForteCenterMapsInterractions;
 import com.audax.dev.forte.maps.MapsClient;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,32 +28,25 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		
 		setContentView(R.layout.map_layout);
 		
-		client = new MapsClient(this);
-		
 		this.setupActionBar();
 		
-		mapsItx = new ForteCenterMapsInterractions(this, R.id.mapFragment, client);
-		
-		mapsItx.prepareMap();
-		
-		final Handler handler = new Handler();
-		
-		handler.postAtTime(new Runnable() {
+		if (client == null) {
+			client = new MapsClient(this);
 			
-			@Override
-			public void run() {
-				Repository repo = new Repository();
-				mapsItx.loadMarkersForCenters(repo.getAvailableCenters(), false);
+			
+			
+			mapsItx = new ForteCenterMapsInterractions(this, R.id.mapFragment, client);
+			
+			mapsItx.setOnMapReadyListener(new ForteCenterMapsInterractions.OnMapReadyListener() {
 				
-				handler.postAtTime(new Runnable() {
-					
-					@Override
-					public void run() {
-						captureSentCenter();
-					}
-				}, 400);
-			}
-		}, 500);
+				@Override
+				public void onMapReady(ForteCenterMapsInterractions itx) {
+					captureSentCenter();
+				}
+			});
+			
+			mapsItx.prepareMap();
+		}
 		//initLocations();
 	}
 	
@@ -84,155 +76,14 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		return super.onOptionsItemSelected(item);
 	}
 	
-	
-//	private class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-//		@Override
-//		public View getInfoContents(Marker arg0) {
-//			return null;
-//		}
-//		
-//		private View infoWindow;
-//
-//		@Override
-//		public View getInfoWindow(Marker arg0) {
-//			if (infoWindow == null) {
-//				infoWindow = getLayoutInflater().inflate(R.layout.center_marker_info, null);
-//				//infoWindow.findViewById(R.id.btn_info_directions).setOnClickListener(MapsActivity.this);
-//				infoWindow.setClickable(false);
-//			}
-//			
-//			Center center = getCenter(arg0);
-//			//tag the center to use for location directions
-//			//infoWindow.findViewById(R.id.btn_info_directions).setTag(center);
-//			((TextView) infoWindow.findViewById(R.id.lbl_info_center_name)).setText(center.getName());
-//			((TextView) infoWindow.findViewById(R.id.lbl_info_location)).setText(center.getLocation());
-//			((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(String.format("%s: %s",
-//					center.getCategory(), center.getAvailability()));
-//			return infoWindow;
-//		}
-//		
-//	}
-//	
-//	private Center getCenter(final Marker marker) {
-//		CenterMarkerMap map = ListUtils.getFirst(centerMarkers, new ListUtils.Matcher<CenterMarkerMap>() {
-//
-//			@Override
-//			public boolean matches(CenterMarkerMap p0) {
-//				return p0.marker.equals(marker);
-//			}
-//		});
-//		
-//		if (map != null) {
-//			Repository repo = new Repository();
-//			return repo.getCenter(map.centerId);
-//		}
-//		return null;
-//	}
-//
-//	private Repository store;
-//	
-//	private static class CenterMarkerMap {
-//		public Marker marker;
-//		public UUID centerId;
-//		public CenterMarkerMap(Marker marker, UUID centerId) {
-//			this.marker = marker;
-//			this.centerId = centerId;
-//		}
-//		
-//	}
-//	
-//	private ArrayList<CenterMarkerMap> centerMarkers = new ArrayList<MapsActivity.CenterMarkerMap>();
-//	
-//	private class LocationsLoadTask extends AsyncTask<String, Center, Void> {
-//
-//		@Override
-//		protected Void doInBackground(String... providers) {
-//			for (Center l : store.getAvailableCenters()) {
-//				this.publishProgress(l);
-//			}
-//			return null;
-//		}
-//
-//		@Override
-//		protected void onProgressUpdate(Center... values) {
-//			for (Center loc : values) {
-//				MarkerOptions mo = new MarkerOptions();
-//				
-//				mo.position(loc.getPosition());
-//				
-//				mo.title(loc.getName());
-//				
-//				mo.icon(BitmapDescriptorFactory.fromResource(loc.resolveIconResource()));
-//				
-//				mo.snippet(loc.getLocation());
-//				
-//				Marker marker = googleMap.addMarker(mo);
-//				
-//				centerMarkers.add(new CenterMarkerMap(marker, loc.getId()));
-//			}
-//		}
-
-//		@Override
-//		protected void onPostExecute(Void result) {
-//			super.onPostExecute(result);
-//			captureSentCenter();
-//		}
+			
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 		
-//		
-//	}
-//	
-//	
-//	private void initLocations() {	
-//		if (store == null) {
-//			store = new Repository();
-//		}
-//		if (googleMap == null) {
-//			
-//		    if (mapFragment == null) {
-//		    	mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.mapFragment);
-//		    }
-//		    /*if (mapFragment != null) {
-//				Log.i("Fragment", "Google Maps fragment found");
-//			}else {
-//				Log.e("Fragment", "Google Maps fragment not found");
-//			}
-//			*/
-//		    
-//			googleMap = mapFragment.getMap();
-//			
-//		    if (googleMap != null) {
-//		    	
-//		    	googleMap.setLocationSource(client);
-//		    	
-//		    	googleMap.setMyLocationEnabled(true);
-//		    	
-//		    	googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
-//		    	
-//		    	googleMap.setOnInfoWindowClickListener(this);
-//		    	
-//		    	googleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-//					
-//					@Override
-//					public void onCameraChange(CameraPosition arg0) {
-//						//Location l = client.getCurrentLocation();
-//						//Log.w("Location", "Could not find current");
-//						
-//						googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Repository.PT_LAGOS, 10));
-//						
-//						googleMap.setOnCameraChangeListener(null);
-//					}
-//				});
-//		    }
-//		}
-//		if (googleMap != null) {
-//			
-//			//Mark current location
-//			LocationsLoadTask task = new LocationsLoadTask();
-//			task.execute(LocationManager.NETWORK_PROVIDER);
-//		}
-//	}
-//
-//
+	}
+
 	//Look for center ids that was passed to activity via intent
 	public void captureSentCenter() {
 		
@@ -251,9 +102,23 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 //
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.map, menu);
+		if (this.mapsItx != null) {
+			this.mapsItx.configureSearch(menu, R.id.action_search_map);
+		}else {
+			Handler h = new Handler();
+			h.postAtTime(new Runnable() {
+				
+				@Override
+				public void run() {
+					if (mapsItx != null) {
+						mapsItx.configureSearch(menu, R.id.action_search_map);
+					}
+				}
+			}, 2000);
+		}
 		return true;
 	}
 

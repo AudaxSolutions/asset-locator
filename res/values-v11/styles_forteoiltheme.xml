@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="ButtonForteOilTheme" parent="android:Widget.Holo.Light.Button">
+	  <item name="android:background">@drawable/forteoiltheme_btn_default_holo_light</item>
+  </style>
+
+  <style name="ImageButtonForteOilTheme" parent="android:Widget.Holo.Light.ImageButton">
+	  <item name="android:background">@drawable/forteoiltheme_btn_default_holo_light</item>
+  </style>
+
+  <style name="SpinnerForteOilTheme" parent="android:Widget.Holo.Light.Spinner">
+      <item name="android:background">@drawable/forteoiltheme_spinner_background_holo_light</item>
+      <item name="android:dropDownSelector">@drawable/forteoiltheme_list_selector_holo_light</item>
+  </style>
+
+  <style name="ProgressBarForteOilTheme" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/forteoiltheme_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/forteoiltheme_progress_indeterminate_horizontal_holo_light</item>
+  </style>
+
+  <style name="SeekBarForteOilTheme" parent="android:Widget.Holo.Light.SeekBar">
+      <item name="android:progressDrawable">@drawable/forteoiltheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/forteoiltheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:thumb">@drawable/forteoiltheme_scrubber_control_selector_holo_light</item>
+  </style>
+
+  <style name="RatingBarForteOilTheme" parent="android:Widget.Holo.Light.RatingBar">
+      <item name="android:progressDrawable">@drawable/forteoiltheme_ratingbar_full_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/forteoiltheme_ratingbar_full_holo_light</item>
+  </style>
+
+  <style name="RatingBarBigForteOilTheme" parent="android:Widget.Holo.Light.RatingBar.Indicator">
+      <item name="android:progressDrawable">@drawable/forteoiltheme_ratingbar_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/forteoiltheme_ratingbar_holo_light</item>
+  </style>
+
+  <style name="RatingBarSmallForteOilTheme" parent="android:Widget.Holo.Light.RatingBar.Small">
+      <item name="android:progressDrawable">@drawable/forteoiltheme_ratingbar_small_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/forteoiltheme_ratingbar_small_holo_light</item>
+  </style>
+
+  <style name="ToggleForteOilTheme" parent="android:Widget.Holo.Light.Button.Toggle">
+      <item name="android:background">@drawable/forteoiltheme_btn_toggle_holo_light</item>
+  </style>
+
+</resources>

@@ -1,20 +1,40 @@
 package com.audax.dev.forte.maps;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.TooManyListenersException;
 import java.util.UUID;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.audax.dev.forte.R;
 import com.audax.dev.forte.data.Center;
+import com.audax.dev.forte.data.CentersLoaderTask;
 import com.audax.dev.forte.data.ListUtils;
 import com.audax.dev.forte.data.Repository;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,15 +44,22 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.LatLngBoundsCreator;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class ForteCenterMapsInterractions {
 	private Activity context;
-	private int mapsFragmentId;
+	private int mapsFragmentId = 0;
 	private GoogleMap googleMap;
 	private Location currentLocation;
+	public static final String TAG = "mapsItx";
 	
 	private com.audax.dev.forte.maps.MapsClient mapsClient;
 	
@@ -54,9 +81,45 @@ public class ForteCenterMapsInterractions {
 		this.googleMap = googleMap;
 		this.mapsClient = mapsClient;
 	}
+	private SearchView searchView;
+	public void configureSearch(Menu menu, int searchViewId) {
+//		 MenuItem searchItem = menu.findItem(searchViewId);
+//		 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//		 
+//		 searchView.setOnSearchClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				CharSequence qry = searchView.getQuery();
+//				doSearchForCenter(qry);
+//			}
+//		 });
+	}
 
-
+	protected void doSearchForCenter(CharSequence qry) {
+		switchFocusTo(qry.toString(), false);
+	}
+	
 	private boolean setupCompleted = false;
+	
+	public interface OnMapReadyListener {
+		void onMapReady(ForteCenterMapsInterractions itx);
+	}
+	
+	private OnMapReadyListener onMapReadyListener;
+	
+
+	public OnMapReadyListener getOnMapReadyListener() {
+		return onMapReadyListener;
+	}
+
+
+	public void setOnMapReadyListener(OnMapReadyListener onMapReadyListener) {
+		this.onMapReadyListener = onMapReadyListener;
+	}
+
+
+	private Marker myLocationMarker;
 
 	public void prepareMap() {
 		if (!setupCompleted) {
@@ -70,14 +133,30 @@ public class ForteCenterMapsInterractions {
 			
 			if (this.context instanceof FragmentActivity) {
 				FragmentActivity fAct = (FragmentActivity)context;
-				SupportMapFragment mf = (SupportMapFragment) fAct.getSupportFragmentManager()
-											.findFragmentById(this.mapsFragmentId);
-				googleMap = mf.getMap();
-			}else {
-				MapFragment mf = (MapFragment)context.getFragmentManager()
-								.findFragmentById(this.mapsFragmentId);
 				
-				googleMap = mf.getMap();
+				if (mapsFragmentId != 0) {
+					SupportMapFragment mf = (SupportMapFragment) fAct.getSupportFragmentManager()
+							.findFragmentById(mapsFragmentId);
+					googleMap = mf.getMap();
+				}else {
+					SupportMapFragment mf = (SupportMapFragment) fAct.getSupportFragmentManager()
+							.findFragmentByTag("maps");
+					googleMap = mf.getMap();
+				}
+				
+			}else {
+				if (mapsFragmentId != 0) {
+					MapFragment mf = (MapFragment)context.getFragmentManager()
+							.findFragmentById(mapsFragmentId);
+			
+					googleMap = mf.getMap();
+				}else {
+					MapFragment mf = (MapFragment)context.getFragmentManager()
+							.findFragmentByTag("maps");
+			
+					googleMap = mf.getMap();
+				}
+				
 			}
 			
 		    /*if (mapFragment != null) {
@@ -86,9 +165,21 @@ public class ForteCenterMapsInterractions {
 				Log.e("Fragment", "Google Maps fragment not found");
 			}
 			*/
-			
-		    
 		}
+		
+		final MapsClient.ClientListener oldL = mapsClient.getClientListener();
+		mapsClient.setClientListener(new MapsClient.ClientListenerAdapter() {
+			
+			@Override
+			public void onLocationChanged(MapsClient client, Location location) {
+				currentLocation = location;
+				client.stop();
+				client.setClientListener(oldL);
+			}
+		});
+		this.mapsClient.start();
+		
+		
 		
 		if (googleMap != null) {
 	    	
@@ -101,9 +192,21 @@ public class ForteCenterMapsInterractions {
 	    	googleMap.setOnInfoWindowClickListener(new  GoogleMap.OnInfoWindowClickListener() {
 
 				@Override
-				public void onInfoWindowClick(Marker arg0) {
-					Center center = getCenter(arg0);
-					requestDrivingDirections(center);
+				public void onInfoWindowClick(final Marker arg0) {
+					if (arg0 == myLocationMarker) {
+						ensureNearestCenterLoaded(false, new Runnable() {
+
+							@Override
+							public void run() {
+								requestDrivingDirections(arg0, null);
+							}
+						});
+						
+					}else {
+						Center center = getCenter(arg0);
+						requestDrivingDirections(arg0, center);
+					}
+					
 				}
 	    		
 	    	});
@@ -113,15 +216,120 @@ public class ForteCenterMapsInterractions {
 				@Override
 				public void onCameraChange(CameraPosition arg0) {
 					//Location l = client.getCurrentLocation();
-					//Log.w("Location", "Could not find current");
 					
-					googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Repository.PT_LAGOS, 10));
+					captureMarkerForCurrentLocation(true);
+					
+					
+					googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Repository.PT_LAGOS, context.getResources().getInteger(R.integer.default_zoom_level)));
 					
 					googleMap.setOnCameraChangeListener(null);
+					
+					ensureNearestCenterLoaded(true, new Runnable() {
+						
+						@Override
+						public void run() {
+							myLocationMarker.showInfoWindow();
+							
+							if (onMapReadyListener != null) {
+					    		onMapReadyListener.onMapReady(ForteCenterMapsInterractions.this);
+					    	}
+						}
+					});
 				}
 			});
+	    	
+	    	CentersLoaderTask task = new CentersLoaderTask(context);
+			task.setLoaderListener(new CentersLoaderTask.LoaderListener() {
+				
+				@Override
+				public void onCenterFound(Center center, CentersLoaderTask task) {
+					addMarker(center);
+				}
+
+				@Override
+				public void onCompleted(CentersLoaderTask loader) {
+					
+				}
+
+				@Override
+				public void onLoadStarted(CentersLoaderTask loader) {
+					//clear();
+				}
+			});
+			task.execute();
 	    }
 	}
+
+	protected void captureMarkerForCurrentLocation(boolean b) {
+		if (myLocationMarker == null || b) {
+			if (myLocationMarker != null) {
+				myLocationMarker.remove();
+			}
+			Location location = getCurrentLocation();
+			if (location != null) {
+				String title = null;
+//				if (Geocoder.isPresent()) {
+//					Geocoder g = new Geocoder(getContext(), Locale.getDefault());
+//					if (g != null) {
+//						try {
+//							List<Address> addresses = g.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//							if (!addresses.isEmpty()) {
+//								Address addr = addresses.get(0);
+//								if (title == null) {
+//									title = addr.getAddressLine(0);
+//								}
+//								if (title == null) {
+//									title = addr.getSubLocality();
+//								}
+//							}
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+				
+				if (title == null) {
+					title = context.getString(R.string.my_location);
+				}
+				//Log.w("Location", "Could not find current");
+				myLocationMarker = googleMap.addMarker(new MarkerOptions()
+										.position(LocationUtils.toLatLng(getCurrentLocation()))
+										.title(title)
+										.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_forte_original_marker)));
+			}
+			
+		}
+		
+	}
+
+
+	protected void ensureNearestCenterLoaded(boolean force, final Runnable runnable) {
+		if (this.closestCenter == null || force) {
+			ClosestCenterLocator locator = new ClosestCenterLocator(getContext(), getCurrentLocation());
+			locator.setListener(new ClosestCenterLocator.ClosestCenterListener() {
+				@Override
+				public void onCloseCenterFound(Center center, ClosestCenterLocator locator) {
+					closestCenter = center;
+					if (myLocationMarker != null) {
+						myLocationMarker.setSnippet(getContext().getString(R.string.center_info_format,
+								center.getName(), center.getDistanceInKilometers(getContext()), context.getString(R.string.kilometers)));
+					}
+					if (runnable != null) {
+						runnable.run();
+					}	
+				}
+			});
+			locator.execute();
+		}else {
+			if (runnable != null) {
+				runnable.run();
+			}
+		}
+	}
+
+
+
 
 	public void stopListening() {
 		if (mapsClient != null) {
@@ -145,13 +353,49 @@ public class ForteCenterMapsInterractions {
 				infoWindow.setClickable(false);
 			}
 			
-			Center center = getCenter(arg0);
-			//tag the center to use for location directions
-			//infoWindow.findViewById(R.id.btn_info_directions).setTag(center);
-			((TextView) infoWindow.findViewById(R.id.lbl_info_center_name)).setText(center.getName());
-			((TextView) infoWindow.findViewById(R.id.lbl_info_location)).setText(center.getLocation());
-			((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(String.format("%s: %s",
-					center.getCategory(), center.getAvailability()));
+			if (arg0.equals(myLocationMarker)) {
+				//tag the center to use for location directions
+				//infoWindow.findViewById(R.id.btn_info_directions).setTag(center);
+				((TextView) infoWindow.findViewById(R.id.lbl_info_center_name)).setText(myLocationMarker.getTitle());
+				((TextView) infoWindow.findViewById(R.id.lbl_info_location)).setText(myLocationMarker.getSnippet());
+				if (closestCenter != null) {
+					((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(String.format("%s, %s %s",
+							closestCenter.getCategory(), context.getString(R.string.available),
+							closestCenter.getAvailability()));
+				}else {
+					((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(null);
+				}
+				((TextView)infoWindow.findViewById(R.id.lbl_drive_direction))
+				.setText(R.string.drive_there);
+				
+//				if (closestCenter != null) {
+//					((TextView) infoWindow.findViewById(R.id.lbl_info_location)).setText(closestCenter.getName());
+//					((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(String.format("%s, %.2f%s: %s", closestCenter.getCategory(),
+//																						closestCenter.getDistanceInKilometers(getContext()),
+//																						getContext().getResources().getString(R.string.kilometers),
+//																						closestCenter.getAvailability()));
+//				}else {
+//					((TextView) infoWindow.findViewById(R.id.lbl_info_location)).setText(myLocationMarker.getSnippet());
+//					((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(null);
+//				}
+				
+			}else {
+				Center center = getCenter(arg0);
+				if (center == null) {
+					return null;
+				}
+				((TextView)infoWindow.findViewById(R.id.lbl_drive_direction))
+				.setText(R.string.drive_here);
+				//tag the center to use for location directions
+				//infoWindow.findViewById(R.id.btn_info_directions).setTag(center);
+				((TextView) infoWindow.findViewById(R.id.lbl_info_center_name)).setText(center.getName());
+				((TextView) infoWindow.findViewById(R.id.lbl_info_location)).setText(center.getLocation());
+				((TextView) infoWindow.findViewById(R.id.lbl_info_availability)).setText(String.format("%s: %s",
+						center.getCategory(), center.getAvailability()));
+				
+			}
+			
+			
 			return infoWindow;
 		}
 		
@@ -159,10 +403,9 @@ public class ForteCenterMapsInterractions {
 	
 	private static class CenterMarkerMap {
 		public Marker marker;
-		public UUID centerId;
-		public CenterMarkerMap(Marker marker, UUID centerId) {
+		public Center center;
+		public CenterMarkerMap(Marker marker, Center center) {
 			this.marker = marker;
-			this.centerId = centerId;
 		}
 		
 	}
@@ -179,10 +422,38 @@ public class ForteCenterMapsInterractions {
 		});
 		
 		if (map != null) {
-			Repository repo = new Repository();
-			return repo.getCenter(map.centerId);
+			return map.center;
 		}
 		return null;
+	}
+	
+	public void clear() {
+		if (googleMap != null && centerMarkers != null) {
+			if (!centerMarkers.isEmpty()) {
+				Iterator<CenterMarkerMap> itr = this.centerMarkers.iterator();
+				while (itr.hasNext()) {
+					itr.next().marker.remove();
+				}
+				centerMarkers.clear();
+			}
+		}
+	}
+	
+	public void addMarker(Center center) {
+		MarkerOptions mo = new MarkerOptions();
+		
+		mo.position(center.getPosition());
+		
+		mo.title(center.getName());
+		
+		mo.icon(BitmapDescriptorFactory.fromResource(center.resolveIconResource()));
+		
+		mo.snippet(center.getLocation());
+		
+		Marker marker = googleMap.addMarker(mo);
+		
+		centerMarkers.add(new CenterMarkerMap(marker, center));
+		
 	}
 
 	public void loadMarkersForCenters(Collection<Center> centers, boolean clearFirst, LatLng center) {
@@ -191,48 +462,179 @@ public class ForteCenterMapsInterractions {
 		}
 		
 		if (clearFirst) {
-			googleMap.clear();
-			centerMarkers.clear();
+			this.clear();
 		}
 		
 		for (Center loc : centers) {
-			MarkerOptions mo = new MarkerOptions();
-			
-			mo.position(loc.getPosition());
-			
-			mo.title(loc.getName());
-			
-			mo.icon(BitmapDescriptorFactory.fromResource(loc.resolveIconResource()));
-			
-			mo.snippet(loc.getLocation());
-			
-			Marker marker = googleMap.addMarker(mo);
-			
-			centerMarkers.add(new CenterMarkerMap(marker, loc.getId()));
+			this.addMarker(loc);
+		}
+		
+		int zoom = context.getResources().getInteger(R.integer.default_zoom_level);
+		if (center != null) {
+			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoom));
 		}
 	}
 
 	public void loadMarkersForCenters(Collection<Center> centers, boolean clearFirst) {
-		this.loadMarkersForCenters(centers, clearFirst, null);
+		Location l = this.getCurrentLocation();
+		
+		this.loadMarkersForCenters(centers, clearFirst, l != null ? LocationUtils.toLatLng(l) : null);
 	}
 	
 	
 	public Location getCurrentLocation() {
+		if (currentLocation == null && this.mapsClient != null) {
+			currentLocation = this.mapsClient.getCurrentLocation();
+		}
 		return currentLocation;
 	}
 
 	public void setCurrentLocation(Location currentLocation) {
 		this.currentLocation = currentLocation;
 	}
+	
+	private float distanceRadius = -1;
+	
+	
+	public float getDistanceRadius() {
+		if (distanceRadius < 0) {
+			distanceRadius = R.integer.default_circle_radius;
+		}
+		return distanceRadius;
+	}
 
-	private void requestDrivingDirections(Center center) {
+
+	public void setDistanceRadius(float distanceRadius) {
+		float f = this.getDistanceRadius();
+		float diff = f - distanceRadius;
+		if (this.googleMap.getMaxZoomLevel() < diff) {
+			this.googleMap.animateCamera(CameraUpdateFactory.zoomBy(diff));
+			this.distanceRadius = distanceRadius;
+			this.refreshCircle();
+		}else if (this.googleMap.getMinZoomLevel() > diff) {
+			this.googleMap.animateCamera(CameraUpdateFactory.zoomBy(diff));
+			this.distanceRadius = distanceRadius;
+			this.refreshCircle();
+		}
+		
+	}
+	
+	private ValueAnimator currentAnimator;
+	
+	private Polyline centerLine;
+	
+	private void circleRound(Location from, Center center) {
+		
+		if (centerLine != null) {
+			centerLine.remove();
+		}
+		LatLng fromPt = LocationUtils.toLatLng(from);
+		
+		LatLng toPt = center.getPosition();
+		
+		LatLngBounds bounds = LatLngBounds.builder().include(fromPt).include(toPt).build();
+		
+		CircleOptions circleOpt = new CircleOptions();
+		
+		float[] results = {0, 0, 0};
+		
+		Location.distanceBetween(fromPt.latitude, fromPt.longitude, toPt.latitude, toPt.longitude, results);
+		
+		this.distanceRadius = results[0] + 1000;
+		
+		circleOpt.center(fromPt);
+		
+		circleOpt.strokeColor(context.getResources().getColor(R.color.forte_foreground_dark));
+		
+		circleOpt.strokeWidth(context.getResources().getInteger(R.integer.center_circle_thickness));
+		
+		circleOpt.fillColor(Color.TRANSPARENT);
+		
+		circleOpt.visible(true);
+		
+		//Compensate by 1000 meters
+		circleOpt.radius(this.distanceRadius);
+		
+		//circle.zIndex(4);
+		
+		circle = this.googleMap.addCircle(circleOpt);
+		
+		this.googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+		
+		this.googleMap.animateCamera(CameraUpdateFactory.newLatLng(fromPt));
+		
+//		centerLine = this.googleMap.addPolyline(new PolylineOptions()
+//			.add(fromPt, toPt)
+//			.geodesic(true)
+//			.color(getContext().getResources().getColor(R.color.link))
+//		);
+//		
+		//this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fromPt, context.getResources().getInteger(R.integer.default_zoom_level)));
+		
+		//this.googleMap.moveCamera(CameraUpdateFactory.zoomOut());
+		
+		
+		
+//		//Set animation
+		ValueAnimator anim = ValueAnimator.ofFloat(this.distanceRadius, 0);
+		anim.setInterpolator(new AccelerateDecelerateInterpolator());
+		anim.setDuration(context.getResources().getInteger(R.integer.circle_animation_duration));
+		anim.setRepeatCount(ValueAnimator.INFINITE);
+		anim.setRepeatMode(ValueAnimator.REVERSE);
+		anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+			
+			@Override
+			public void onAnimationUpdate(ValueAnimator animation) {
+				Float f = (Float)animation.getAnimatedValue();
+				circle.setRadius(f);
+			}
+		});
+		currentAnimator = anim;
+		anim.start();
+		
+	}
+	
+	private boolean showingCircle = false;
+	private Circle circle;
+	private Center closestCenter;
+	public void showClosestCenters() {
+		if (getCurrentLocation() == null) {
+			Log.d(TAG, "currentLocation is not set");
+			return;
+		}
+		if (!this.showingCircle) {
+			this.showingCircle = true;
+			this.ensureNearestCenterLoaded(true, new Runnable() {
+				
+				@Override
+				public void run() {
+					circleRound(getCurrentLocation(), closestCenter);
+				}
+			});
+		}else {
+			this.refreshCircle();
+		}
+	}
+
+	private void refreshCircle() {
+		currentAnimator.end();
+		float r = this.getDistanceRadius();
+		currentAnimator.setFloatValues(r, 0);
+		currentAnimator.start();
+	}
+
+	
+	private void requestDrivingDirections(Marker marker, Center center) {
 		//Construct intent for driving directions
+		if (center == null) {
+			center = closestCenter;
+		}
 		Location loc = currentLocation;
 		if (loc == null && mapsClient != null) {
 			loc = mapsClient.getCurrentLocation();
 			currentLocation = loc;
 		}
-		if (loc != null) {
+		if (loc != null && center != null) {
 			String apiPath = context.getString(R.string.google_maps_uri);
 			//The start char for parameters
 			//If '?' is already present the use '&'
@@ -266,6 +668,8 @@ public class ForteCenterMapsInterractions {
 	public Activity getContext() {
 		return context;
 	}
+	
+	
 
 	public GoogleMap getGoogleMap() {
 		return googleMap;
@@ -273,24 +677,43 @@ public class ForteCenterMapsInterractions {
 
 	public void switchFocusTo(final UUID centerId) {
 		this.switchFocusTo(centerId, false);
-		
 	}
-	public void switchFocusTo(final UUID centerId, boolean animate) {
-
+	
+	protected void switchFocusTo(final String centerName, boolean animate) {
 		CenterMarkerMap map = ListUtils.getFirst(centerMarkers, new ListUtils.Matcher<CenterMarkerMap>() {
 
 			@Override
 			public boolean matches(CenterMarkerMap p0) {
-				int co = p0.centerId.compareTo(centerId);
-				
-				return co == 0;
+				return p0.center.getName().regionMatches(true, 0, centerName, 0, centerName.length());
+			}
+		});
+		if (map != null) {
+			int zoom = context.getResources().getInteger(R.integer.zoom_general);
+			if (animate) {
+				googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(map.marker.getPosition(), zoom));
+			}else {
+				googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(map.marker.getPosition(), zoom));
+			}
+			map.marker.showInfoWindow();
+		}
+	}
+	
+	
+	public void switchFocusTo(final UUID centerId, boolean animate) {
+		
+		CenterMarkerMap map = ListUtils.getFirst(centerMarkers, new ListUtils.Matcher<CenterMarkerMap>() {
+
+			@Override
+			public boolean matches(CenterMarkerMap p0) {
+				return p0.center.getId().equals(centerId);
 			}
 		});
 		
+		int zoom = context.getResources().getInteger(R.integer.zoom_general);
 		if (animate) {
-			googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(map.marker.getPosition(), 10));
+			googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(map.marker.getPosition(), zoom));
 		}else {
-			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(map.marker.getPosition(), 10));
+			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(map.marker.getPosition(), zoom));
 		}
 		map.marker.showInfoWindow();
 	}

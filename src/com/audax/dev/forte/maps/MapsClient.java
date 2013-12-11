@@ -35,7 +35,21 @@ public class MapsClient implements LocationSource {
 	};
 
 	public static interface ClientListener {
-		void onLocationChanged(MapsClient client);
+		void onLocationChanged(MapsClient client, Location location);
+		//void onLocationChanged(MapsClient client);
+	}
+	
+	public static abstract class ClientListenerAdapter implements ClientListener {
+
+		@Override
+		public void onLocationChanged(MapsClient client, Location location) {
+			// TODO Auto-generated method stub
+		}
+		
+		public void onLocationChanged(MapsClient client) {
+			this.onLocationChanged(client, client.getCurrentLocation());
+		}
+		
 	}
 
 	private ClientListener clientListener;
@@ -56,7 +70,7 @@ public class MapsClient implements LocationSource {
 	protected void makeUseOfNewLocation(Location location) {
 		this.currentLocation = location;
 		if (this.clientListener != null) {
-			this.clientListener.onLocationChanged(this);
+			this.clientListener.onLocationChanged(this, location);
 		}
 	}
 
@@ -180,11 +194,15 @@ public class MapsClient implements LocationSource {
 
 	@Override
 	public void activate(final OnLocationChangedListener arg0) {
-		this.clientListener = new ClientListener() {
+		final ClientListener oldL = this.clientListener;
+		this.clientListener = new ClientListenerAdapter() {
 
 			@Override
-			public void onLocationChanged(MapsClient client) {
-				arg0.onLocationChanged(client.getCurrentLocation());
+			public void onLocationChanged(MapsClient client, Location location) {
+				arg0.onLocationChanged(location);
+				if (oldL != null) {
+					oldL.onLocationChanged(client, location);
+				}
 			}
 		};
 		this.start();

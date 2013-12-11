@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">FORTE OIL</string>
+    <string name="app_name">Forte Oil</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="banner">Forte Mobile</string>
@@ -20,7 +20,7 @@
     <string name="vehicle_maintenance">Vehicle Maintenance</string>
     <string name="products">Products</string>
     <string name="news">News</string>
-    <string name="available">Available Stations</string>
+    <string name="available_stations">Available Stations</string>
     <string name="locate">Locate Nearest Station</string>
     <string name="register_vehicle">Register Vehicle</string>
     <string name="alerts">Alerts</string>
@@ -33,9 +33,10 @@
     <string name="home">Home</string>
     <string name="welcome">Welcome</string>
     <string name="view_in_map">View in map</string>
-    <string name="loading">Loading, wait...</string>
+    <string name="loading">Loading, please wait...</string>
     <string name="search_nearest_center">Searching for nearest center, please wait...</string>
     <string name="closest_station_is">Closest station is</string>
+    <string name="center_info_format">%1$s is %2$.2f%3$s away</string>
     <string name="kilometers">Km</string>
     <string name="miles">Mi</string>
     <string name="no_location">Current location not determined</string>
@@ -55,8 +56,21 @@
         <item>8.5%s</item>
         <item>10%s</item>
     </string-array>
+    <string name="conversation_meter_to_mile">0.00062137</string>
     <string name="locate_stations">Locate Stations</string>
+    
     <string name="animate_center_focus">false</string>
     <string name="no_centers_within">No center within %1$.1f%2$s was found</string>
+    <string name="category_filling_station">Filling Station</string>
+    <string name="category_service_station">Service Station</string>
+    <string name="category_gas_station">Filling Station</string>
+    <string name="category_service_station">Service Station</string>
+    <string name="category_gas_station">Filling Station</string>
+    <string name="category_car_wash">Service Station</string>
+    <string name="my_location">My Location</string>
+    <string name="drive_there">Drive there</string>
+    <string name="available">Available</string>
+    <string name="drive_here">Drive here</string>
+    <string name="action_search_center">Search Centers</string>
 
 </resources>

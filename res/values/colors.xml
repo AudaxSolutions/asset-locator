@@ -1,6 +1,6 @@
 <resources>
     <color name="black_overlay">#66000000</color>
-    <color name="dark_forground">#ffffff</color>
+    <color name="dark_foreground">#ffffff</color>
     <color name="gray">#808080</color>
     <color name="link">#4080c0</color>
     <color name="forte_foreground_dark">#009D4A</color>

@@ -137,17 +137,35 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 	
 	
 	@Override
-	public void onLocationChanged(MapsClient client) {
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.lnk_view_in_map:
+			if (this.closestCenter != null) {
+				
+				Intent itt = new Intent(this.getActivity(), MapsActivity.class);
+				
+				itt.putExtra("centerId", closestCenter.getId().toString());
+				
+				//itt.putExtra("marker", mo);
+				
+				this.startActivity(itt);
+			}
+			break;
+		}
+	}
+
+	@Override
+	public void onLocationChanged(MapsClient client, Location location) {
 		Repository repo = new Repository();
-		Collection<Center> centers = repo.getAvailableCenters();
-		Location loc = client.getCurrentLocation();
+		Collection<Center> centers = repo.getAvailableCenters(getActivity());
+		Location loc = location;
 		LatLng ll = new LatLng(loc.getLatitude(), loc.getLongitude());
 		client.stop();
 		Center closest = LocationUtils.getClosest(ll, centers);
 		
-		String distanceText = String.format("%1$.2f%2$s/%3$.2f%4$s", closest.getDistanceInMiles(),
+		String distanceText = String.format("%1$.2f%2$s/%3$.2f%4$s", closest.getDistanceInMiles(getActivity()),
 					this.getString(R.string.miles),
-					closest.getDistanceInMiles() * LocationUtils.MILES_TO_KILO,
+					closest.getDistanceInKilometers(getActivity()),
 					this.getActivity().getString(R.string.kilometers));
 		
 		closest.setDistance(distanceText);
@@ -164,24 +182,6 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 		this.rootView.findViewById(R.id.lbl_nearest_center_name).setVisibility(View.VISIBLE);
 		this.rootView.findViewById(R.id.lbl_distance_away).setVisibility(View.VISIBLE);
 		this.rootView.findViewById(R.id.lnk_view_in_map).setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void onClick(View v) {
-		switch(v.getId()) {
-		case R.id.lnk_view_in_map:
-			if (this.closestCenter != null) {
-				
-				Intent itt = new Intent(this.getActivity(), MapsActivity.class);
-				
-				itt.putExtra("centerId", closestCenter.getId().toString());
-				
-				//itt.putExtra("marker", mo);
-				
-				this.startActivity(itt);
-			}
-			break;
-		}
 	}
 	
 }

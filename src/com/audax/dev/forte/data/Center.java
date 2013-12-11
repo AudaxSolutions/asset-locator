@@ -2,14 +2,16 @@ package com.audax.dev.forte.data;
 
 import java.util.UUID;
 
+import android.content.Context;
 import android.net.Uri;
 
+import com.audax.dev.forte.R;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Center implements Cloneable {
-	private String name, category, distance, location, availability;
+	private String name, category, distance, location, availability, state;
 	private UUID id;
-	private float distanceInMiles;
+	private float distanceInMeters;
 	public Center(UUID id, String name, String category, String distance, String location) {
 		super();
 		this.id = id;
@@ -19,6 +21,20 @@ public class Center implements Cloneable {
 		this.location = location;
 	}
 	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public static int getIconResourceId(String type) {
+		return R.drawable.service_point;
+	}
+
+
+
 	private long lastUpdated = 0L;
 	
 	/**
@@ -52,17 +68,34 @@ public class Center implements Cloneable {
 		return iconResource;
 	}
 
-	public float getDistanceInMiles() {
-		return distanceInMiles;
+	public float getDistanceInMiles(Context context) {
+		return (Float.parseFloat(context.getString(R.string.conversation_meter_to_mile)) * distanceInMeters);
+	}
+	
+	public float getDistanceInKilometers(Context context) {
+		return (this.distanceInMeters / 1000);
+	}
+	
+	public float getDistanceInMeters() {
+		return distanceInMeters;
 	}
 
-	public void setDistanceInMiles(float distanceInMiles) {
+	public void setDistanceInMeters(float distanceInMeters) {
 		this.lastUpdated = System.currentTimeMillis();
-		this.distanceInMiles = distanceInMiles;
+		this.distanceInMeters = distanceInMeters;
 	}
 
-
-
+	public int getItemIconResource(Context context) {
+		if (this.category.equals(context.getString(R.string.category_service_station))) {
+			return R.drawable.ic_motor_oil;
+		}
+		if (this.category.equals(context.getString(R.string.category_car_wash))) {
+			return R.drawable.ic_carwash_icon;
+		}
+		return R.drawable.ic_gas_station_icon_gray;
+		
+	}
+	
 	public void setIconResource(int iconResource) {
 		this.iconResource = iconResource;
 	}
@@ -108,6 +141,7 @@ public class Center implements Cloneable {
 	}
 
 	public void setCategory(String category) {
+		this.iconResource = getIconResourceId(category);
 		this.category = category;
 	}
 

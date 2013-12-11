@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="ForteOilTheme" parent="android:Theme.Light">
+
+    <item name="android:editTextStyle">@style/EditTextForteOilTheme</item>
+
+    <item name="android:radioButtonStyle">@style/RadioButtonForteOilTheme</item>
+
+    <item name="android:buttonStyle">@style/ButtonForteOilTheme</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonForteOilTheme</item>
+
+    <item name="android:spinnerStyle">@style/SpinnerForteOilTheme</item>
+
+    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemForteOilTheme</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarForteOilTheme</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarForteOilTheme</item>
+
+    <item name="android:ratingBarStyle">@style/RatingBarForteOilTheme</item>
+
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigForteOilTheme</item>
+
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallForteOilTheme</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleForteOilTheme</item>
+
+    <item name="android:listViewStyle">@style/ListViewForteOilTheme</item>
+
+    <item name="android:listViewWhiteStyle">@style/ListViewForteOilTheme.White</item>
+
+    <item name="android:spinnerItemStyle">@style/SpinnerItemForteOilTheme</item>
+
+  </style>
+
+</resources>
