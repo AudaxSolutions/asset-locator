@@ -35,7 +35,7 @@
     <string name="loading">Loading, please wait...</string>
     <string name="search_nearest_center">Searching for nearest center, please wait...</string>
     <string name="closest_station_is">Closest station is</string>
-    <string name="center_info_format">%1$s is %2$.2f%3$s away</string>
+    <string name="center_info_format">%1$s, %2$s is %3$.2f%4$s away</string>
     <string name="kilometers">Km</string>
     <string name="miles">Mi</string>
     <string name="no_location">Current location not determined</string>

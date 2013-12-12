@@ -29,6 +29,7 @@ public class Repository {
 	
 	
 	
+<<<<<<< HEAD
 	
 	private static final String[][] CENTERS = {
 		{"Forte Oil - Awolowo", "Service Station", "1.4mi", "6:00AM - 10:00PM", "6.44231, 3.41780", "Awolowo"},
@@ -38,6 +39,8 @@ public class Repository {
 		{"Forte Oil - Wharf Road", "Service Station", "11mi", "6:00AM - 10:00PM", "6.51045,3.360229", "Wharf Road"},
 		
 	};
+=======
+>>>>>>> ife
 	//Use static so that it will be available static-wide
 	private static List<Center> demoCenters;
 	

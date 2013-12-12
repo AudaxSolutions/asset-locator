@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.audax.dev.forte.R;
-import com.audax.dev.forte.R.id;
-import com.audax.dev.forte.R.layout;
 import com.audax.dev.forte.maps.LocationUtils;
 
 public class CentersAdapter extends BaseAdapter {

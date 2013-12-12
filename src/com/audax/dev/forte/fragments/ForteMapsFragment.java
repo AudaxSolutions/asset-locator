@@ -1,22 +1,16 @@
 package com.audax.dev.forte.fragments;
 
-import com.audax.dev.forte.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.SearchView;
-import android.content.Intent;
 
 import com.audax.dev.forte.CenterListActivity;
 import com.audax.dev.forte.ProductListActivity;
+import com.audax.dev.forte.R;
 import com.audax.dev.forte.WebViewActivity;
-import com.audax.dev.forte.data.Center;
-import com.audax.dev.forte.data.CentersLoaderTask;
 import com.audax.dev.forte.maps.ForteCenterMapsInterractions;
 import com.audax.dev.forte.maps.MapsClient;
 import com.audax.dev.forte.web.ApplicationRegistry;
@@ -53,6 +47,7 @@ public class ForteMapsFragment extends SupportMapFragment {
 			this.isPrepared = savedInstanceState.getBoolean(FLAG_PREPARE);
 		}
 		this.setHasOptionsMenu(true);
+		
 	}
 	
 	
