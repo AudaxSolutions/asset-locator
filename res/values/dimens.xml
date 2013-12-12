@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <dimen name="next_label_padding">12sp</dimen>
     <dimen name="activity_horizontal_margin">2sp</dimen>
     <dimen name="activity_vertical_margin">2sp</dimen>
     <dimen name="center_list_view_padding">6sp</dimen>
-
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+<<<<<<< HEAD
     <string name="app_name">Forte Oil</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -72,5 +73,4 @@
     <string name="available">Available</string>
     <string name="drive_here">Drive here</string>
     <string name="action_search_center">Search Centers</string>
-
 </resources>
