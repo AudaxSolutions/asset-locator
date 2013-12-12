@@ -7,14 +7,14 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import com.audax.dev.forte.data.Center;
+import com.audax.dev.forte.data.CentersAdapter;
 import com.audax.dev.forte.data.CentersLoaderTask;
-import com.audax.dev.forte.data.Repository;
-import com.audax.dev.forte.maps.LocationUtils;
 import com.audax.dev.forte.maps.MapsClient;
 
 public class CenterListActivity extends ListActivity implements MapsClient.ClientListener {
@@ -42,10 +42,22 @@ public class CenterListActivity extends ListActivity implements MapsClient.Clien
 	}
 	
 	
+	
+	
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.center_list, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+
+
+
 
 	protected void loadCenters(final Location location) {
 		centersAdapter = new CentersAdapter(this);
-		
+		centersAdapter.setCurrentLocation(location);
 		setListAdapter(centersAdapter);
 		
 		CentersLoaderTask task = new CentersLoaderTask(this);
@@ -63,7 +75,7 @@ public class CenterListActivity extends ListActivity implements MapsClient.Clien
 			
 			@Override
 			public void onCenterFound(Center center, CentersLoaderTask loader) {
-				LocationUtils.updateDistance(location, center);
+				//LocationUtils.updateDistance(location, center);
 				centersAdapter.add(center);
 			}
 		});

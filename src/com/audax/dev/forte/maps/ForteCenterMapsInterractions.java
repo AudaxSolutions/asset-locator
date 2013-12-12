@@ -406,6 +406,7 @@ public class ForteCenterMapsInterractions {
 		public Center center;
 		public CenterMarkerMap(Marker marker, Center center) {
 			this.marker = marker;
+			this.center = center;
 		}
 		
 	}

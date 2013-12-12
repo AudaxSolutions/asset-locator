@@ -145,12 +145,14 @@ public class Center implements Cloneable {
 		this.category = category;
 	}
 
-	public String getDistance() {
+	public String getDistance(Context context) {
+		if (distance == null) {
+			distance = context.getString(R.string.format_distance, getDistanceInKilometers(context),
+										 context.getString(R.string.kilometers),
+										 getDistanceInMiles(context),
+										 context.getString(R.string.miles));
+		}
 		return distance;
-	}
-
-	public void setDistance(String distance) {
-		this.distance = distance;
 	}
 
 	public String getLocation() {

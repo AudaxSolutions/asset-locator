@@ -69,9 +69,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			this.finish();
-			
-			//NavUtils.navigateUpFromSameTask(this);
 			return true;
+			//NavUtils.navigateUpFromSameTask(this);
+		case R.id.action_search_in_map:
+			return false;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -106,7 +107,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.map, menu);
 		if (this.mapsItx != null) {
-			this.mapsItx.configureSearch(menu, R.id.action_search_map);
+			this.mapsItx.configureSearch(menu, R.id.action_search_in_map);
 		}else {
 			Handler h = new Handler();
 			h.postAtTime(new Runnable() {
@@ -114,12 +115,12 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 				@Override
 				public void run() {
 					if (mapsItx != null) {
-						mapsItx.configureSearch(menu, R.id.action_search_map);
+						mapsItx.configureSearch(menu, R.id.action_search_in_map);
 					}
 				}
 			}, 2000);
 		}
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 
@@ -140,39 +141,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		this.client.stop();
 	}
 
-//	private void requestDrivingDirections(Center center) {
-//		//Construct intent for driving directions
-//		Location loc = this.client.getCurrentLocation();
-//		if (loc != null) {
-//			String apiPath = getString(R.string.google_maps_uri);
-//			//The start char for parameters
-//			//If '?' is already present the use '&'
-//			char parametersChar = apiPath.indexOf('?') == -1 ?  '?' : '&';
-//			
-//			StringBuilder builder = new StringBuilder();
-//			
-//			builder.append(apiPath);
-//			
-//			builder.append(parametersChar);
-//			
-//			builder.append("saddr=").append(LocationUtils.escapeLocation(loc));
-//			
-//			builder.append("&daddr=").append(LocationUtils.escapeLocation(center.getPosition()));
-//			
-//			builder.append("&mode=d");
-//			
-//			//Log.i("Requesting driving directions using %s", builder.toString());
-//			
-//			Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-//                    Uri.parse(builder.toString()));
-//            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-//            
-//            this.startActivity(intent);
-//
-//		}else {
-//			Toast.makeText(this, R.string.no_location, Toast.LENGTH_SHORT).show();
-//		}
-//	}
+
 
 	@Override
 	public void onClick(View v) {

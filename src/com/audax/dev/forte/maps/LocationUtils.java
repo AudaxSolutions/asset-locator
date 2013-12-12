@@ -70,6 +70,23 @@ public class LocationUtils {
 		return closest;
 	}
 	
+	public static Center getClosestCenter(LatLng fromPoint, Iterator<Center> centers, float maxDistance) {
+		Center closest = null;
+		float last = maxDistance;
+		float[] results = {0, 0, 0};
+		while (centers.hasNext()) {
+			Center c = centers.next();
+			Location.distanceBetween(fromPoint.latitude, fromPoint.longitude,
+					c.getPosition().latitude, c.getPosition().longitude, results);
+			if (last > results[0] || last < 0) {
+				last = results[0];
+				closest = c;
+			}
+		}
+		closest.setDistanceInMeters(last);
+		return closest;
+	}
+	
 	public static void updateDistance(Location fromPoint, Center toCenter) {
 		float[] results = {0, 0, 0};
 		Location.distanceBetween(fromPoint.getLatitude(), fromPoint.getLongitude(),
@@ -110,29 +127,6 @@ public class LocationUtils {
 	 * @throws CloneNotSupportedException 
 	 */
 	public static Center getClosest(LatLng location, Collection<Center> centers) {
-//		int len = centers.size();
-//		if (len == 0) {
-//			return null;
-//		}
-		float[] results = {0, 0, 0};
-		Center closest = null;
-		float lastDistance = -1f;
-		for (Center c : centers) {
-			Location.distanceBetween(location.latitude, location.longitude,
-						c.getPosition().latitude, c.getPosition().longitude, results);
-			if (lastDistance == -1f) {
-				lastDistance = results[0];
-				closest = c;
-			}else {
-				if (lastDistance < results[0]) {
-					lastDistance = results[0];
-					closest = c;
-				}
-			}
-		}
-		//Resolve closest
-		
-		
-		return closest;
+		return getClosestCenter(location, centers.iterator(), -1);
 	}
 }
