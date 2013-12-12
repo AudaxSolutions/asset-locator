@@ -1,34 +1,21 @@
 package com.audax.dev.forte.maps;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.TooManyListenersException;
 import java.util.UUID;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
-import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,11 +35,9 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.LatLngBoundsCreator;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 public class ForteCenterMapsInterractions {
 	private Activity context;
@@ -81,7 +66,8 @@ public class ForteCenterMapsInterractions {
 		this.googleMap = googleMap;
 		this.mapsClient = mapsClient;
 	}
-	private SearchView searchView;
+	
+	//private SearchView searchView;
 	public void configureSearch(Menu menu, int searchViewId) {
 //		 MenuItem searchItem = menu.findItem(searchViewId);
 //		 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -193,7 +179,7 @@ public class ForteCenterMapsInterractions {
 
 				@Override
 				public void onInfoWindowClick(final Marker arg0) {
-					if (arg0 == myLocationMarker) {
+					if (arg0.equals(myLocationMarker)) {
 						ensureNearestCenterLoaded(false, new Runnable() {
 
 							@Override
@@ -211,6 +197,7 @@ public class ForteCenterMapsInterractions {
 	    		
 	    	});
 	    	
+	    	
 	    	googleMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 				
 				@Override
@@ -224,43 +211,59 @@ public class ForteCenterMapsInterractions {
 					
 					googleMap.setOnCameraChangeListener(null);
 					
-					ensureNearestCenterLoaded(true, new Runnable() {
-						
-						@Override
-						public void run() {
-							myLocationMarker.showInfoWindow();
+					if (captureMarkerForCurrentLocation(true)) {
+						ensureNearestCenterLoaded(true, new Runnable() {
 							
-							if (onMapReadyListener != null) {
-					    		onMapReadyListener.onMapReady(ForteCenterMapsInterractions.this);
-					    	}
-						}
-					});
+							@Override
+							public void run() {
+								if (myLocationMarker != null) {
+									myLocationMarker.showInfoWindow();
+								}
+								loadMarkers(new Runnable() {
+									
+									@Override
+									public void run() {
+										if (onMapReadyListener != null) {
+								    		onMapReadyListener.onMapReady(ForteCenterMapsInterractions.this);
+								    	}
+									}
+								});
+								
+							}
+						});
+					}
 				}
 			});
 	    	
-	    	CentersLoaderTask task = new CentersLoaderTask(context);
-			task.setLoaderListener(new CentersLoaderTask.LoaderListener() {
-				
-				@Override
-				public void onCenterFound(Center center, CentersLoaderTask task) {
-					addMarker(center);
-				}
-
-				@Override
-				public void onCompleted(CentersLoaderTask loader) {
-					
-				}
-
-				@Override
-				public void onLoadStarted(CentersLoaderTask loader) {
-					//clear();
-				}
-			});
-			task.execute();
+	    	
 	    }
 	}
+	
+	protected void loadMarkers(final Runnable completeCallback) {
+		CentersLoaderTask task = new CentersLoaderTask(context);
+		task.setLoaderListener(new CentersLoaderTask.LoaderListener() {
+			
+			@Override
+			public void onCenterFound(Center center, CentersLoaderTask task) {
+				addMarker(center);
+			}
 
-	protected void captureMarkerForCurrentLocation(boolean b) {
+			@Override
+			public void onCompleted(CentersLoaderTask loader) {
+				if (completeCallback != null) {
+					completeCallback.run();
+				}
+			}
+
+			@Override
+			public void onLoadStarted(CentersLoaderTask loader) {
+				//clear();
+			}
+		});
+		task.execute();
+	}
+
+	protected boolean captureMarkerForCurrentLocation(boolean b) {
 		if (myLocationMarker == null || b) {
 			if (myLocationMarker != null) {
 				myLocationMarker.remove();
@@ -297,10 +300,11 @@ public class ForteCenterMapsInterractions {
 										.position(LocationUtils.toLatLng(getCurrentLocation()))
 										.title(title)
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_forte_original_marker)));
+				return true;
 			}
 			
 		}
-		
+		return false;
 	}
 
 
@@ -313,7 +317,7 @@ public class ForteCenterMapsInterractions {
 					closestCenter = center;
 					if (myLocationMarker != null) {
 						myLocationMarker.setSnippet(getContext().getString(R.string.center_info_format,
-								center.getName(), center.getDistanceInKilometers(getContext()), context.getString(R.string.kilometers)));
+								center.getName(), center.getLocation(), center.getDistanceInKilometers(getContext()), context.getString(R.string.kilometers)));
 					}
 					if (runnable != null) {
 						runnable.run();
@@ -447,7 +451,8 @@ public class ForteCenterMapsInterractions {
 		
 		mo.title(center.getName());
 		
-		mo.icon(BitmapDescriptorFactory.fromResource(center.resolveIconResource()));
+		mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_forte));
+		//mo.icon(BitmapDescriptorFactory.fromResource(center.resolveIconResource()));
 		
 		mo.snippet(center.getLocation());
 		

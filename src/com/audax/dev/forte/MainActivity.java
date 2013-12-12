@@ -11,12 +11,10 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.TextView;
 
 import com.audax.dev.forte.fragments.ForteMapsFragment;
 import com.audax.dev.forte.fragments.LoadingFragment;
@@ -64,9 +62,8 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	private ForteMapsFragment mapsFragment;
 	
 	private void setupNew() {
-		setContentView(R.layout.main);
+		
 		//Hide initialy
-		hideMenuItems(true);
 		LoadingFragment lf = (LoadingFragment)
 				this.getSupportFragmentManager().findFragmentById(R.id.loading_fragment);
 		lf.setCompleteTask(new Runnable() {
@@ -83,7 +80,8 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_forte_mobile);
+		setContentView(R.layout.main);
+	    //Force overflow button to show
 		try {
 	        ViewConfiguration config = ViewConfiguration.get(this);
 	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
@@ -99,7 +97,6 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 
 	
 	protected void switchToMapsFragment() {
-		this.hideMenuItems(false);
 		
 		FragmentManager fm = this.getSupportFragmentManager();
 		FragmentTransaction trx = fm.beginTransaction();
@@ -135,37 +132,6 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 		this.startActivity(itt);
 	}
 	
-	private Menu __menu;
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.main_menu, menu);
-//		__menu = menu;
-//		return true;
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	private void hideMenuItems(boolean b) {
-		if (__menu == null) {
-			return;
-		}
-		for (int j = 0, len = __menu.size(); j < len; j++) {
-			__menu.getItem(j).setVisible(!b);
-		}
-		
-		//ActionBar bar = this.getActionBar();
-		
-	}
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-		//delayedHide(100);
-	}
-
 	/**
 	 * Touch listener to use for in-layout UI controls to delay hiding the
 	 * system UI. This is to prevent the jarring behavior of controls going away

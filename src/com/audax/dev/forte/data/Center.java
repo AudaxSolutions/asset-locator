@@ -125,7 +125,7 @@ public class Center implements Cloneable {
 	
 	public int getDefaultIconResource() {
 		//TODO: Use the category to determine icon resource
-		return com.audax.dev.forte.R.drawable.service_point;
+		return com.audax.dev.forte.R.drawable.ic_marker_forte;
 	}
 
 	public String getName() {
@@ -156,6 +156,9 @@ public class Center implements Cloneable {
 	}
 
 	public String getLocation() {
+		if (location == null) {
+			return "";
+		}
 		return location;
 	}
 

@@ -29,14 +29,6 @@ public class Repository {
 	
 	
 	
-	
-	private static final String[][] CENTERS = {
-		{"Forte Oil - Eleko", "Filling Station", "1.4mi", "6:00AM - 10:00PM", "6.483161,3.596596", "Eleko"},
-		{"Forte Oil - Alasia", "Service Station", "0.6mi", "6:00AM - 10:00PM", "6.495782,3.573936", "Alasia"},
-		{"Forte Oil - Ago Iwoye", "Filling Station", "12mi", "6:00AM - 10:00PM", "6.812751,3.910776", "Ago Iwoye"},
-		{"Forte Oil - Wharf Road", "Service Station", "11mi", "6:00AM - 10:00PM", "6.51045,3.360229", "Wharf Road"},
-		
-	};
 	//Use static so that it will be available static-wide
 	private static List<Center> demoCenters;
 	

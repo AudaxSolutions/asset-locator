@@ -8,14 +8,11 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.audax.dev.forte.maps.ForteCenterMapsInterractions;
 import com.audax.dev.forte.maps.MapsClient;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
 
-public class MapsActivity extends FragmentActivity implements View.OnClickListener, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends FragmentActivity {
 
 //	private SupportMapFragment mapFragment;
 //	private GoogleMap googleMap;
@@ -32,8 +29,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		
 		if (client == null) {
 			client = new MapsClient(this);
-			
-			
 			
 			mapsItx = new ForteCenterMapsInterractions(this, R.id.mapFragment, client);
 			
@@ -61,13 +56,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
 			this.finish();
 			return true;
 			//NavUtils.navigateUpFromSameTask(this);
@@ -77,13 +65,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		return super.onOptionsItemSelected(item);
 	}
 	
-			
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		
-	}
 
 	//Look for center ids that was passed to activity via intent
 	public void captureSentCenter() {
@@ -141,23 +122,5 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 		this.client.stop();
 	}
 
-
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		
-		}
-		
-	}
-
-	
-	@Override
-	public void onInfoWindowClick(Marker arg0) {
-//		Center center = this.getCenter(arg0);
-//		requestDrivingDirections(center);
-	}
-	
-	
 
 }

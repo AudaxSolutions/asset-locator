@@ -43,17 +43,19 @@ public class ClosestCenterLocator extends AsyncTask<Void, Void, Center> {
 	
 	
 
+	public ClosestCenterLocator(Context context) {
+		super();
+		this.context = context;
+	}
+	
+
+
 	@Override
 	protected void onPostExecute(Center result) {
 		super.onPostExecute(result);
 		if (this.listener != null) {
 			this.listener.onCloseCenterFound(result, this);
 		}
-	}
-
-	public ClosestCenterLocator(Context context) {
-		super();
-		this.context = context;
 	}
 
 	public float getMaximumDistance() {
@@ -74,6 +76,9 @@ public class ClosestCenterLocator extends AsyncTask<Void, Void, Center> {
 
 	@Override
 	protected Center doInBackground(Void... arg0) {
+		if (this.fromLocation == null) {
+			return null;
+		}
 		return LocationUtils.getClosestCenter(this.fromLocation,
 				(new Repository()).getAvailableCenters(context).iterator(),
 				this.maximumDistance);
