@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.content.Intent;
+
 import com.audax.dev.forte.CenterListActivity;
 import com.audax.dev.forte.ProductListActivity;
 import com.audax.dev.forte.WebViewActivity;
@@ -72,6 +73,8 @@ public class ForteMapsFragment extends SupportMapFragment {
 			itt = new Intent(this.getActivity(), ProductListActivity.class);
 			this.startActivity(itt);
 			return true;
+		case R.id.action_search_in_home_map:
+			return false;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -81,7 +84,7 @@ public class ForteMapsFragment extends SupportMapFragment {
 		inflater.inflate(R.menu.maps_menu, menu);
 		
 		if (this.mapsItx != null) {
-			this.mapsItx.configureSearch(menu, R.id.action_search);
+			this.mapsItx.configureSearch(menu, R.id.action_search_in_home_map);
 		}else {
 			Handler h = new Handler();
 			h.postAtTime(new Runnable() {
@@ -89,7 +92,7 @@ public class ForteMapsFragment extends SupportMapFragment {
 				@Override
 				public void run() {
 					if (mapsItx != null) {
-						mapsItx.configureSearch(menu, R.id.action_search);
+						mapsItx.configureSearch(menu, R.id.action_search_in_home_map);
 					}
 				}
 			}, 2000);

@@ -264,18 +264,9 @@ public class MainActivity extends FragmentActivity implements MapsClient.ClientL
 	
 	
 
-	private boolean firstTime = true;
 	@Override
 	public void onLocationChanged(MapsClient client, Location location) {
-		//Location location = client.getCurrentLocation();
-		if (firstTime) {
-			firstTime = false;
-			this.findViewById(R.id.btn_goto_map).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.load_screen_progress_bar).setVisibility(View.GONE);
-		}
-		TextView status = (TextView)this.findViewById(R.id.next_station_label);
-		status.setText(String.format(this.getString(R.string.next_station), this.getString(R.string.demo_loc), "124Km"));
-		client.stop();
+		
 	}
 
 	@Override

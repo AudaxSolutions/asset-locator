@@ -71,6 +71,12 @@
     <string name="drive_there">Drive there</string>
     <string name="available">Available</string>
     <string name="drive_here">Drive here</string>
-    <string name="action_search_center">Search Centers</string>
-
+    <string name="action_search">Search</string>
+    <string name="format_distance">%1$.2f%2$s/%3$.2f%4$s</string>
+    <string-array name="center_order_by_list">
+        <item >distance</item>
+        <item >Location</item>
+        <item >Name</item>
+        
+    </string-array>
 </resources>

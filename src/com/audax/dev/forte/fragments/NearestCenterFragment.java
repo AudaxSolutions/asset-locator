@@ -163,12 +163,6 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 		client.stop();
 		Center closest = LocationUtils.getClosest(ll, centers);
 		
-		String distanceText = String.format("%1$.2f%2$s/%3$.2f%4$s", closest.getDistanceInMiles(getActivity()),
-					this.getString(R.string.miles),
-					closest.getDistanceInKilometers(getActivity()),
-					this.getActivity().getString(R.string.kilometers));
-		
-		closest.setDistance(distanceText);
 		
 		this.closestCenter = closest;
 		((TextView)this.rootView
@@ -176,7 +170,7 @@ public class NearestCenterFragment extends Fragment implements MapsClient.Client
 					.setText(closest.getName());
 		((TextView)this.rootView
 				.findViewById(R.id.lbl_distance_away))
-				.setText(distanceText);
+				.setText(closest.getDistance(getActivity()));
 		
 		this.rootView.findViewById(R.id.lbl_loading_nearest).setVisibility(View.GONE);
 		this.rootView.findViewById(R.id.lbl_nearest_center_name).setVisibility(View.VISIBLE);
