@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -20,10 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.audax.dev.forte.R;
+import com.audax.dev.forte.RunnableTrain;
 import com.audax.dev.forte.data.Center;
 import com.audax.dev.forte.data.CentersLoaderTask;
 import com.audax.dev.forte.data.ListUtils;
 import com.audax.dev.forte.data.Repository;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -110,6 +114,8 @@ public class ForteCenterMapsInterractions {
 	public void prepareMap() {
 		if (!setupCompleted) {
 			setupCompleted = true;
+		}else {
+			return;
 		}
 		if (googleMap == null) {
 			
@@ -192,7 +198,6 @@ public class ForteCenterMapsInterractions {
 						Center center = getCenter(arg0);
 						requestDrivingDirections(arg0, center);
 					}
-					
 				}
 	    		
 	    	});
@@ -203,8 +208,6 @@ public class ForteCenterMapsInterractions {
 				@Override
 				public void onCameraChange(CameraPosition arg0) {
 					//Location l = client.getCurrentLocation();
-					
-					captureMarkerForCurrentLocation(true);
 					
 					
 					googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Repository.PT_LAGOS, context.getResources().getInteger(R.integer.default_zoom_level)));
@@ -234,8 +237,6 @@ public class ForteCenterMapsInterractions {
 					}
 				}
 			});
-	    	
-	    	
 	    }
 	}
 	
@@ -301,8 +302,9 @@ public class ForteCenterMapsInterractions {
 										.title(title)
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_forte_original_marker)));
 				return true;
+			}else {
+				Toast.makeText(getContext(), R.string.error_google_services_not_found, Toast.LENGTH_LONG);
 			}
-			
 		}
 		return false;
 	}
@@ -331,9 +333,7 @@ public class ForteCenterMapsInterractions {
 			}
 		}
 	}
-
-
-
+	
 
 	public void stopListening() {
 		if (mapsClient != null) {
@@ -451,7 +451,7 @@ public class ForteCenterMapsInterractions {
 		
 		mo.title(center.getName());
 		
-		mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_forte));
+		mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_forter_map_marker));
 		//mo.icon(BitmapDescriptorFactory.fromResource(center.resolveIconResource()));
 		
 		mo.snippet(center.getLocation());
@@ -492,6 +492,9 @@ public class ForteCenterMapsInterractions {
 		if (currentLocation == null && this.mapsClient != null) {
 			currentLocation = this.mapsClient.getCurrentLocation();
 		}
+		if (currentLocation == null) {
+			Toast.makeText(getContext(), R.string.error_google_services_not_found, Toast.LENGTH_LONG);
+		}
 		return currentLocation;
 	}
 
@@ -529,6 +532,26 @@ public class ForteCenterMapsInterractions {
 	
 	private Polyline centerLine;
 	
+	private static class MapRunnableCallback implements GoogleMap.CancelableCallback {
+		private RunnableTrain train;
+		
+		
+		public MapRunnableCallback(RunnableTrain train) {
+			super();
+			this.train = train;
+		}
+
+		@Override
+		public void onCancel() {
+			
+		}
+
+		@Override
+		public void onFinish() {
+			train.notifyCompleted();
+		}
+	}
+	
 	private void circleRound(Location from, Center center) {
 		
 		if (centerLine != null) {
@@ -538,7 +561,7 @@ public class ForteCenterMapsInterractions {
 		
 		LatLng toPt = center.getPosition();
 		
-		LatLngBounds bounds = LatLngBounds.builder().include(fromPt).include(toPt).build();
+		//LatLngBounds bounds = LatLngBounds.builder().include(fromPt).include(toPt).build();
 		
 		CircleOptions circleOpt = new CircleOptions();
 		
@@ -546,7 +569,7 @@ public class ForteCenterMapsInterractions {
 		
 		Location.distanceBetween(fromPt.latitude, fromPt.longitude, toPt.latitude, toPt.longitude, results);
 		
-		this.distanceRadius = results[0] + 1000;
+		this.distanceRadius = results[0] + 100;
 		
 		circleOpt.center(fromPt);
 		
@@ -565,9 +588,57 @@ public class ForteCenterMapsInterractions {
 		
 		circle = this.googleMap.addCircle(circleOpt);
 		
-		this.googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+		final int timeout = context.getResources().getInteger(R.integer.first_launch_pan_timeout);
 		
-		this.googleMap.animateCamera(CameraUpdateFactory.newLatLng(fromPt));
+		final int zoom = context.getResources().getInteger(R.integer.zoom_general);
+		
+		RunnableTrain.RunnableFunction fxn1 = new RunnableTrain.RunnableFunction() {
+			
+			@Override
+			public void run(Object argument, RunnableTrain train) {
+				LatLng p = (LatLng)argument;
+				//googleMap.moveCamera(CameraUpdateFactory.newLatLng(p));
+				googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p, zoom));
+				train.notifyCompleted();
+				showInfoWindow(p);
+			}
+		};
+		
+		
+		RunnableTrain.RunnableFunction fxn2 = new RunnableTrain.RunnableFunction() {
+			
+			@Override
+			public void run(Object argument, RunnableTrain train) {
+				LatLng p = (LatLng)argument;
+				googleMap.animateCamera(CameraUpdateFactory.newLatLng(p),
+						timeout, new MapRunnableCallback(train));
+				showInfoWindow(p);
+			}
+		};
+		
+		RunnableTrain.RunnableFunction fxn3 = new RunnableTrain.RunnableFunction() {
+			
+			@Override
+			public void run(Object argument, RunnableTrain train) {
+				LatLng p = (LatLng)argument;
+				googleMap.animateCamera(CameraUpdateFactory.newLatLng(p),
+						timeout, new MapRunnableCallback(train));
+				showInfoWindow(p);
+			}
+		};
+		
+		RunnableTrain t1 = RunnableTrain.startFrom(fxn1);
+		t1.setArgument(fromPt);
+		RunnableTrain t2 = t1.before(fxn2, 1000);
+		t2.setArgument(toPt);
+		t2.before(fxn3, 2000).setArgument(fromPt);
+		Handler h = new Handler();
+		h.postAtTime(t1, 1000);
+		
+//		
+//		this.googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+//		
+//		this.googleMap.animateCamera(CameraUpdateFactory.newLatLng(fromPt));
 		
 //		centerLine = this.googleMap.addPolyline(new PolylineOptions()
 //			.add(fromPt, toPt)
@@ -600,11 +671,31 @@ public class ForteCenterMapsInterractions {
 		
 	}
 	
+	
+
+	protected void showInfoWindow(final LatLng position) {
+		if (myLocationMarker != null && myLocationMarker.getPosition().equals(position)) {
+			myLocationMarker.showInfoWindow();
+		}else {
+			CenterMarkerMap map = ListUtils.getFirst(centerMarkers, new ListUtils.Matcher<CenterMarkerMap>() {
+
+				@Override
+				public boolean matches(CenterMarkerMap p0) {
+					return p0.center.getPosition().equals(position);
+				}
+			});
+			if (map != null) {
+				map.marker.showInfoWindow();
+			}
+		}
+	}
+	
 	private boolean showingCircle = false;
 	private Circle circle;
 	private Center closestCenter;
 	public void showClosestCenters() {
 		if (getCurrentLocation() == null) {
+			Toast.makeText(getContext(), R.string.error_google_services_not_found, Toast.LENGTH_LONG);
 			Log.d(TAG, "currentLocation is not set");
 			return;
 		}

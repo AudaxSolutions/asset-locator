@@ -43,8 +43,13 @@ public class ForteMapsFragment extends SupportMapFragment {
 				}
 			});
 		}
-		if (savedInstanceState != null && savedInstanceState.containsKey(FLAG_PREPARE)) {
-			this.isPrepared = savedInstanceState.getBoolean(FLAG_PREPARE);
+		if (savedInstanceState != null) {
+			if (savedInstanceState.containsKey(FLAG_PREPARE)) {
+				this.isPrepared = savedInstanceState.getBoolean(FLAG_PREPARE);
+			}
+			if (savedInstanceState.containsKey(FLAG_MENU_SET)) {
+				this.menuInited = savedInstanceState.getBoolean(FLAG_MENU_SET);
+			}
 		}
 		this.setHasOptionsMenu(true);
 		
@@ -74,24 +79,29 @@ public class ForteMapsFragment extends SupportMapFragment {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private boolean menuInited = false;
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.maps_menu, menu);
-		
-		if (this.mapsItx != null) {
-			this.mapsItx.configureSearch(menu, R.id.action_search_in_home_map);
-		}else {
-			Handler h = new Handler();
-			h.postAtTime(new Runnable() {
-				
-				@Override
-				public void run() {
-					if (mapsItx != null) {
-						mapsItx.configureSearch(menu, R.id.action_search_in_home_map);
+		if (!menuInited) {
+			menuInited = true;
+			inflater.inflate(R.menu.maps_menu, menu);
+			
+			if (this.mapsItx != null) {
+				this.mapsItx.configureSearch(menu, R.id.action_search_in_home_map);
+			}else {
+				Handler h = new Handler();
+				h.postAtTime(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (mapsItx != null) {
+							mapsItx.configureSearch(menu, R.id.action_search_in_home_map);
+						}
 					}
-				}
-			}, 2000);
+				}, 2000);
+			}
 		}
+		
 	}
 
 
@@ -116,7 +126,8 @@ public class ForteMapsFragment extends SupportMapFragment {
 	}
 	
 	
-	private static final String FLAG_PREPARE = "forte-maps:isPrepared";
+	private static final String FLAG_PREPARE = "forte-maps:isPrepared",
+								FLAG_MENU_SET = "forte-maps:menuSet";
 
 
 	@Override
@@ -124,6 +135,7 @@ public class ForteMapsFragment extends SupportMapFragment {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(FLAG_PREPARE, this.isPrepared);
+		outState.putBoolean(FLAG_MENU_SET, menuInited);
 	}
 
 	@Override

@@ -2,12 +2,13 @@
 <resources>
     <integer name="max_radius">300</integer>
     <integer name="minimum_radius">1</integer>
-    <integer name="default_zoom_level">3</integer>
-    <integer name="zoom_default">3</integer>
-    <integer name="zoom_general">13</integer>
+    <integer name="default_zoom_level">13</integer>
+    <integer name="zoom_default">10</integer>
+    <integer name="zoom_general">15</integer>
     <integer name="loading_animation_timeout">200</integer>
     <integer name="center_circle_thickness">3</integer>
     <integer name="default_circle_radius">1500</integer>
     <integer name="circle_animation_duration">2000</integer>
     <integer name="circle_padding">1500</integer>
+    <integer name="first_launch_pan_timeout">5000</integer>
 </resources>
