@@ -5,7 +5,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.audax.dev.forte.R;
 import com.google.android.gms.maps.LocationSource;
 
 public class MapsClient implements LocationSource {
@@ -13,7 +15,14 @@ public class MapsClient implements LocationSource {
 	private Context activityContext;
 	private LocationManager locationManager;
 
-	
+	/**
+	 * The providers used in order
+	 */
+	protected static final String[] ORDER_PROVIDERS = {
+		LocationManager.NETWORK_PROVIDER,
+		LocationManager.GPS_PROVIDER,
+		LocationManager.PASSIVE_PROVIDER
+	};
 	
 	// 3.951941,9.422836
 	// Define a listener that responds to location updates
@@ -88,11 +97,21 @@ public class MapsClient implements LocationSource {
 					.getSystemService(Context.LOCATION_SERVICE);
 		}
 		if (!listening) {
-			this.listening = true;
-			locationManager.requestLocationUpdates(this.locationProvider, 0, 0,
-					locationListener);
+			
+			for (int j = 0, len = ORDER_PROVIDERS.length; j < len; j++) {
+				if (locationManager.isProviderEnabled(ORDER_PROVIDERS[j])) {
+					locationManager.requestLocationUpdates(ORDER_PROVIDERS[j], 0, 0,
+							locationListener);
+					this.listening = true;
+					break;
+				}
+			}
 		}
-		this.determineBestLastKnownLocation();
+		if (this.listening) {
+			this.determineBestLastKnownLocation();
+		}else {
+			Toast.makeText(activityContext, R.string.error_google_services_not_found, Toast.LENGTH_LONG);
+		}
 	}
 
 	private void determineBestLastKnownLocation() {
