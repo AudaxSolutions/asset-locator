@@ -592,6 +592,7 @@ public class ForteCenterMapsInterractions {
 		
 		final int zoom = context.getResources().getInteger(R.integer.zoom_general);
 		
+		//Move to current location
 		RunnableTrain.RunnableFunction fxn1 = new RunnableTrain.RunnableFunction() {
 			
 			@Override
@@ -600,11 +601,11 @@ public class ForteCenterMapsInterractions {
 				//googleMap.moveCamera(CameraUpdateFactory.newLatLng(p));
 				googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p, zoom));
 				train.notifyCompleted();
-				showInfoWindow(p);
+				showInfoWindow(p, true);
 			}
 		};
 		
-		
+		//Pan to nearest
 		RunnableTrain.RunnableFunction fxn2 = new RunnableTrain.RunnableFunction() {
 			
 			@Override
@@ -612,10 +613,11 @@ public class ForteCenterMapsInterractions {
 				LatLng p = (LatLng)argument;
 				googleMap.animateCamera(CameraUpdateFactory.newLatLng(p),
 						timeout, new MapRunnableCallback(train));
-				showInfoWindow(p);
+				showInfoWindow(p, false);
 			}
 		};
 		
+		//Move back to current location
 		RunnableTrain.RunnableFunction fxn3 = new RunnableTrain.RunnableFunction() {
 			
 			@Override
@@ -623,7 +625,7 @@ public class ForteCenterMapsInterractions {
 				LatLng p = (LatLng)argument;
 				googleMap.animateCamera(CameraUpdateFactory.newLatLng(p),
 						timeout, new MapRunnableCallback(train));
-				showInfoWindow(p);
+				showInfoWindow(p, true);
 			}
 		};
 		
@@ -673,9 +675,11 @@ public class ForteCenterMapsInterractions {
 	
 	
 
-	protected void showInfoWindow(final LatLng position) {
-		if (myLocationMarker != null && myLocationMarker.getPosition().equals(position)) {
-			myLocationMarker.showInfoWindow();
+	protected void showInfoWindow(final LatLng position, boolean current) {
+		if (current) {
+			if (myLocationMarker != null) {
+				myLocationMarker.showInfoWindow();
+			}
 		}else {
 			CenterMarkerMap map = ListUtils.getFirst(centerMarkers, new ListUtils.Matcher<CenterMarkerMap>() {
 
