@@ -26,8 +26,6 @@ import com.audax.dev.forte.data.Center;
 import com.audax.dev.forte.data.CentersLoaderTask;
 import com.audax.dev.forte.data.ListUtils;
 import com.audax.dev.forte.data.Repository;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -38,7 +36,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -534,8 +531,6 @@ public class ForteCenterMapsInterractions {
 	
 	private static class MapRunnableCallback implements GoogleMap.CancelableCallback {
 		private RunnableTrain train;
-		
-		
 		public MapRunnableCallback(RunnableTrain train) {
 			super();
 			this.train = train;

@@ -5,13 +5,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.audax.dev.forte.R;
 import com.google.android.gms.maps.LocationSource;
 
 public class MapsClient implements LocationSource {
-	private String locationProvider = LocationManager.NETWORK_PROVIDER;
+	private String currentLocationProvider = LocationManager.NETWORK_PROVIDER;
 	private Context activityContext;
 	private LocationManager locationManager;
 
@@ -82,6 +83,24 @@ public class MapsClient implements LocationSource {
 			this.clientListener.onLocationChanged(this, location);
 		}
 	}
+	
+	private boolean singleRequest = false;
+	
+	/**
+	 * Gets whether a single request is made for a location
+	 * @return if a single request should be made for current location
+	 */
+	public boolean isSingleRequest() {
+		return singleRequest;
+	}
+	
+	/**
+	 * Gets whether a single request is made for a location
+	 * @param singleRequest if true then a single request is made
+	 */
+	public void setSingleRequest(boolean singleRequest) {
+		this.singleRequest = singleRequest;
+	}
 
 	private Location currentLocation;
 
@@ -97,15 +116,24 @@ public class MapsClient implements LocationSource {
 					.getSystemService(Context.LOCATION_SERVICE);
 		}
 		if (!listening) {
-			
+			//Try the providers in order
 			for (int j = 0, len = ORDER_PROVIDERS.length; j < len; j++) {
 				if (locationManager.isProviderEnabled(ORDER_PROVIDERS[j])) {
-					locationManager.requestLocationUpdates(ORDER_PROVIDERS[j], 0, 0,
-							locationListener);
+					String provider = ORDER_PROVIDERS[j];
+					currentLocationProvider = provider;
+					if (this.isSingleRequest()) {
+						locationManager.requestSingleUpdate(provider, locationListener, Looper.getMainLooper());
+					}else {
+						locationManager.requestLocationUpdates(provider, 0, 0,
+								locationListener);
+					}
+					
 					this.listening = true;
 					break;
 				}
 			}
+		}else if (isSingleRequest()) {
+			locationManager.requestSingleUpdate(currentLocationProvider, locationListener, Looper.getMainLooper());
 		}
 		if (this.listening) {
 			this.determineBestLastKnownLocation();
@@ -122,7 +150,7 @@ public class MapsClient implements LocationSource {
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		} else {
 			location = this.locationManager
-					.getLastKnownLocation(locationProvider);
+					.getLastKnownLocation(currentLocationProvider);
 		}
 		if (location != null) {
 			if (location.hasAccuracy()) {

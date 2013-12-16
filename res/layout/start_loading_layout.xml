@@ -3,7 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/forte_oild_splash"
+    android:background="@color/white"
     android:orientation="vertical" >
 
     <ProgressBar
@@ -15,15 +15,24 @@
         android:layout_alignParentLeft="true"
         android:max="100" />
 
+    <ImageView
+        android:id="@+id/banner_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/load_screen_wait_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/forte_web_logo" />
+
     <TextView
         android:id="@+id/load_screen_wait_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="14dp"
-        android:layout_marginTop="165dp"
+        android:layout_alignRight="@+id/banner_image"
+        android:layout_marginTop="196dp"
         android:text="@string/loading"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
