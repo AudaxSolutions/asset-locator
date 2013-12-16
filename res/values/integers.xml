@@ -5,7 +5,9 @@
     <integer name="default_zoom_level">13</integer>
     <integer name="zoom_default">10</integer>
     <integer name="zoom_general">15</integer>
-    <integer name="loading_animation_timeout">200</integer>
+    <integer name="animation_loading">2000</integer>
+    <integer name="animation_blink_timeout">300</integer>
+    <integer name="animation_banner_image_timeout">1000</integer>
     <integer name="center_circle_thickness">3</integer>
     <integer name="default_circle_radius">1500</integer>
     <integer name="circle_animation_duration">2000</integer>

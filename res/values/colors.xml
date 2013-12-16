@@ -4,4 +4,5 @@
     <color name="gray">#808080</color>
     <color name="link">#4080c0</color>
     <color name="forte_foreground_dark">#009D4A</color>
+    <color name="white">#ffffff</color>
 </resources>

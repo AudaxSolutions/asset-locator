@@ -19,7 +19,6 @@ public class WebViewActivity extends Activity {
 		if (itt != null && itt.getExtras().containsKey("application")) {
 			Integer appCode = itt.getExtras().getInt("application");
 			try {
-				
 				WebApplication wap = ApplicationRegistry
 					.getInstance().get(appCode);
 				
